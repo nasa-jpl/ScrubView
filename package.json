@@ -1,0 +1,41 @@
+{
+  "name": "ScrubView",
+  "version": "1.0.0",
+  "description": "A viewer for SCRUB issues",
+  "main": "app/main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "./scripts/build.sh",
+    "deploy": "./scripts/deploy.sh",
+    "stage": "./scripts/stage.sh",
+    "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64  --prune=true --out=builds --ignore test --asar",
+    "package-win": "electron-packager . --overwrite --platform=win32  --arch=ia32 --prune=true --out=builds --ignore test --asar",
+    "package-linux": "electron-packager . --overwrite --platform=linux  --arch=x64  --prune=true --out=builds --ignore test --asar"
+  },
+  "repository": "https://github.com/nasa-jpl/ScrubView",
+  "author": "Lyle Barner",
+  "devDependencies": {
+    "@types/command-line-args": "^5.0.0",
+    "@types/jquery": "^3.5.0",
+    "@types/keyv": "^4.2.0",
+    "@types/sendmail": "^1.4.2",
+    "electron": "^23.1.1",
+    "electron-packager": "^17.1.1",
+    "keyv": "^4.5.2"
+  },
+  "dependencies": {
+    "@electron/remote": "2.0.9",
+    "bootstrap": "^4.5.2",
+    "command-line-args": "^5.2.1",
+    "electron-is-dev": "^2.0.0",
+    "jquery": "^3.6.3",
+    "line-ending-corrector": "^1.0.1",
+    "natural-compare-lite": "^1.4.0",
+    "popper.js": "^1.16.1",
+    "sendmail": "^1.6.1",
+    "showdown": "^2.1.0",
+    "ts-md5": "^1.2.7",
+    "ts-node": "^8.6.2",
+    "typescript": "^3.7.5"
+  }
+}

@@ -1,0 +1,59 @@
+<div class="section-body p-2" style="display:flex; flex-direction: column; justify-content: space-between;">
+
+    <!-- Dev Disposition Row -->
+    <div class="row no-gutters" id="row-dev-disposition">
+        <div class="col">
+            <label>New Developer Disposition:</label>
+            <div class="btn-group">
+                <button id="btn-disposition-developer" type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span id="dev-disposition-icon"></span> None
+                </button>
+                <div class="dropdown-menu" id="dropdown-disposition-developer">
+                    <a class="dropdown-item" id="dev-disposition-none" href="#" onclick="view.routeEvent('onDeveloperDispositionChanged', 0)"> None</a>
+                    <a class="dropdown-item" id="dev-disposition-agree" href="#" onclick="view.routeEvent('onDeveloperDispositionChanged', 1)"><span class="svg-check"></span> Agree</a>
+                    <a class="dropdown-item" id="dev-disposition-disagree" href="#" onclick="view.routeEvent('onDeveloperDispositionChanged', 2)"><span class="svg-x"></span> Disagree</a>
+                    <a class="dropdown-item" id="dev-disposition-discuss" href="#" onclick="view.routeEvent('onDeveloperDispositionChanged', 3)"><span class="svg-report"></span> Discuss</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lead Disposition Row -->
+    <div class="row no-gutters" id="row-lead-disposition">
+        <div class="col">
+            <label>New Lead Disposition:</label>
+            <div class="btn-group">
+                <button id="btn-disposition-lead" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    None
+                </button>
+                <div class="dropdown-menu" id="dropdown-disposition-lead">
+                    <a class="dropdown-item" id="lead-disposition-none" href="#" onclick="view.routeEvent('onLeadDispositionChanged', 0)"> None</a>
+                    <a class="dropdown-item" id="lead-disposition-noaction" href="#" onclick="view.routeEvent('onLeadDispositionChanged', 2)"><span class="svg-check"></span> No Action</a>
+                    <a class="dropdown-item" id="lead-disposition-fixcode" href="#" onclick="view.routeEvent('onLeadDispositionChanged', 1)"><span class="svg-bug"></span> Code Fix Requested</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comment Text Area -->
+    <div class="row no-gutters h-75" id="row-add-comment-text" style="flex:1;">
+        <div class="col pb-1">
+            <textarea class="comment-text-area h-100" id="comment-text" placeholder="Add a comment" disabled></textarea>
+        </div>
+    </div>
+
+    <div class="row no-gutters">
+        <div class="col pb-1">
+            <input type="checkbox" id="comment-use-markdown" value="True">
+            <label for="comment-use-markdown">Use Markdown Formatting</label>
+        </div>
+    </div>
+
+    <!-- Add / Cancel Row -->
+    <div class="row no-gutters">
+        <div class="col">
+            <button id="btn-comment-text-add" class="btn btn-primary btn-sm" onclick="view.routeEvent('onCommentCreated')" style="font-size: 0.8em; margin-right:15px;" disabled>Add</button>
+            <button id="btn-comment-text-cancel" class="btn btn-secondary btn-sm" onclick="view.routeEvent('onCommentCanceled')" style="font-size: 0.8em;" disabled>Cancel</button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Compare Builds</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../libs/bootstrap/4.3.1/css/bootstrap.css" />
+    <link rel="stylesheet" href="./css/theme.css" />
+    <link rel="stylesheet" href="./css/codeTheme.css" />
+    
+    <!-- SCRIPTS -->
+    <script> let $ = require('jquery'); </script>
+    <script> require('popper.js'); </script>
+    <script> require('bootstrap'); </script>
+    <script> let view = require('./mainWindow.js') </script>
+</head>
+
+<body>
+    <div class="container-fluid text-center">
+
+        <div class="row" style="background-color:var(--color-background-shade1); border-bottom: 1px solid black; ">
+
+            <div class="col-12">
+                <h4>Compare Builds</h4>
+                <p>Comparing builds allows you to copy dispositions from a previous build, to a newer build. It's intended for use on succesive builds of the samem code base to avoid re-dispositioning errors.</p>
+            </div>
+        </div>
+        
+        <div class="row mt-2">
+
+            <div class="col-3 p-3">
+                
+                <div class="btn-group">
+                    <button id="btn-build1" type="button" class="btn btn-secondary dropdown-toggle btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Select Build 1
+                    </button>
+                    <div class="dropdown-menu" id="dropdown-build1">
+                        <a class="dropdown-item" href="#" onclick="">Build 1</a>
+                        <a class="dropdown-item" href="#" onclick="">Build 2</a>
+                        <a class="dropdown-item" href="#" onclick="">Build 3</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-3 p-3">
+                <div class="btn-group">
+                    <button id="btn-build1" type="button" class="btn btn-secondary dropdown-toggle btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Select Build 2
+                    </button>
+                    <div class="dropdown-menu" id="dropdown-build1">
+                        <a class="dropdown-item" href="#" onclick="">Build 1</a>
+                        <a class="dropdown-item" href="#" onclick="">Build 2</a>
+                        <a class="dropdown-item" href="#" onclick="">Build 3</a>
+                    </div>
+                </div>
+            </div>   
+
+            <div class="col-3 p-3">
+                <div class="btn-group">
+                    <button id="btn-build1" type="button" class="btn btn-secondary dropdown-toggle btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Select Operation
+                    </button>
+                    <div class="dropdown-menu" id="dropdown-build1">
+                        <a class="dropdown-item" href="#" onclick="">Find New Errors</a>
+                    </div>
+                </div>
+            </div>  
+            
+            <div class="col-3 p-3">
+                <button class="btn btn-primary btn-sm disabled">Compare</button>
+            </div>
+
+        </div>
+
+        <div class="row">
+            <div class="col-6">
+                <button class="btn btn-secondary" click="window.close();">Close</button>
+            </div>
+            <div class="col-6">
+                <button class="btn btn-primary disabled">View Results</button>
+            </div>
+        </div>
+
+    </div>
+</body>

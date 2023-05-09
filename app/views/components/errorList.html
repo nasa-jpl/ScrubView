@@ -1,0 +1,210 @@
+<div id="error-list" class="section-body" style="display:flex; flex-direction:column; overflow-y:unset;">
+
+    <!-- Filter  & Sort
+      - Filter Clear All, To Go
+      - Filter: By Type (Error, Comment)
+      - Filter: By File
+      - Filter by Error Type
+      - Sort: By Error Type
+      - Sort: By File
+    -->
+    <!-- Filter & Sort -->
+    <div id="error-list-filters" style="padding: 2px 5px 2px 5px; background-color: var(--color-background-shade1); border-bottom:1px solid var(--color-background-hover0);">
+
+
+      <style>
+          .filter-sort-btn {
+            color: var(--color-text-primary); 
+            border: 1px solid var(--color-border-shade2); 
+            border-radius: 0px; 
+            font-size: 12px; 
+            display:inline;
+            padding: 5px 10px 5px 10px;
+            display: inline;
+          }
+          
+          .filter-sort-btn:hover{
+              color: var(--color-text-primary); 
+          }
+
+
+
+          #filter-menu, 
+          #match-group-files, 
+          #match-group-errors, 
+          #match-group-file-locations,
+          #sort-menu {
+            background-color: var(--color-background-shade1);
+            color: var( --color-text-primary);
+            font-size: 14px;
+            padding: 2px;
+            border-radius: 0px;
+            box-shadow: 2px 2px 4px var(--color-shadow0);
+          } 
+
+          #filter-menu .dropdown-divider {
+              border-top-color: var(--color-border-shade1);
+          }
+
+          .dropdown-submenu-position {
+            top: 0;
+            left: 100%;
+            margin-top: -1px;
+            width: 150%;
+          }
+
+          .dropdown-menu h6 {
+              font-size: 12px;
+              margin: 0px 0px 2px 0px;
+              padding: 0px 0px 2px 0px;
+          }
+
+          .dropdown-menu a {
+              padding-left: 5px;
+          }
+
+          .dropdown-submenu {
+              position: relative;
+          }
+
+
+          .dropdown-menu a {
+            color: var( --color-text-primary);
+            display: block;
+          }
+
+          .dropdown-menu a:hover {
+              text-decoration: none;
+          }
+
+          .dropdown-menu li input {
+              padding-right: 5px;
+          }
+
+          .dropdown-menu li label {
+              margin: 0px;
+          }
+
+          .inactive {
+                color: var(--color-text-inactive) !important;
+                font-weight: 100;
+          }
+
+          .inactive::before {
+             content: "X ";
+              padding-right: 5px;
+          }
+
+          .active {
+              color: var(--color-text-primary);
+              font-weight: bold;
+          }
+
+          .active::before {
+             content: "\2713 ";
+              padding-right: 5px;
+          }
+
+          .filter-all-none-button {
+            font-size: 10px; 
+            display:inline;
+          }
+
+      </style>
+
+        <!------------>
+        <!-- FILTER -->
+        <!------------>
+        <div class="dropdown " style="display:inline;" id="filter-menu-parent">
+            <button class="btn btn-default dropdown-toggle filter-sort-btn" type="button" data-toggle="dropdown">
+               <object type="image/svg+xml" data="img/filter.svg" style="width: 15px; height: 15px; margin: 0; padding: 4px 0 0 0;"></object>
+               Filter
+            </button>
+
+            <!-- Top Level -->
+            <div class="dropdown-menu" id="filter-menu">
+
+                <!-- Tools -->
+                <h6 class="dropdown-header">Tools</h6>
+                <div id="match-tools-list">
+                    <!-- Populated on Module Load -->
+                </div>
+                
+            </div>
+        </div>
+
+
+
+
+        <!------------------->
+        <!--     Stats     -->
+        <!------------------->
+        <div style="font-size: 10px; color: var(--color-text-primary); display: inline; margin-left: 5px;" >
+            Displaying: <span style="font-weight: bold;"><span id="filter-count-displayed">0</span> / <span id="filter-count-total">0</span></span>
+        </div>
+
+
+        <script>
+
+            function closeAllSubMenus()
+            {
+                $('.dropdown-submenu a').each( function(index) {
+                    if($(this).next('div').css("display") == "block")
+                    {
+                        $(this).next('div').toggle();
+                    }
+                });
+            }
+
+
+            $(document).ready(function () {
+
+                // Attach All / None Button Events
+                $(".filter-all-none-button").on("click", function(e) {
+                    
+                    e.stopPropagation();
+                    e.preventDefault();
+
+                    // Send the Event 
+                    var args = new Object();
+                    args.group = $(this).attr("data-group");
+                    args.type = $(this).attr("data-type");
+                    view.routeEvent("filter.allNone", args);
+                });
+
+                // Submenu Toggling
+                $('.dropdown-submenu a').on("click", function (e) {
+
+                    // Close any open submenus
+                    closeAllSubMenus();
+
+                    // Open the Selected Menu
+                    $(this).next('div').toggle();
+                    e.stopPropagation();
+                    e.preventDefault();
+                });
+
+                // Close Main Menu -> Close SubMenus
+                $('#filter-menu-parent').on('hide.bs.dropdown', function (e) {
+                    console.log("Closing All Submenus")
+                    closeAllSubMenus();
+                })
+            });
+        </script>
+
+
+    </div>
+
+
+    <!-- Populated on Module Selection -->
+    <div id="error-list-children" style="flex:1; overflow-y:auto;">
+    </div>
+
+    <!-- Pagenitation Panel -->
+    <div id="error-list-pagenation"
+        style="text-align: left; background-color: var(--color-background-shade1); border-top:1px solid var(--color-background-hover0); padding: 5px; overflow-x:scroll; overflow-y:hidden; white-space: nowrap; display: none;">
+        <div class="btn-group" role="group" id="error-list-pagenation-buttons">
+            <!-- If Pageniation is required, buttons will be added here -->
+        </div>
+    </div>
+</div>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>ScrubView</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../libs/bootstrap/4.3.1/css/bootstrap.css" />
+    <link rel="stylesheet" href="./css/theme.css" />
+    <link rel="stylesheet" href="./css/codeTheme.css" />
+    
+    <!-- SCRIPTS -->
+    <script> let $ = require('jquery'); </script>
+    <script> require('popper.js'); </script>
+    <script> require('bootstrap'); </script>
+    <script> let view = require('./mainWindow.js') </script>
+</head>
+
+<body>
+
+    <!-- Setup IPC from the main process -->
+    <script type="text/javascript">
+        const electron = require('electron');
+
+        console.debug("Initializing Render Task IPC");
+        
+        // On Menu Disposition changes, add them 
+        electron.ipcRenderer.on("addDisposition", (event, message) => {
+            console.debug(`Received IPC Message: addDisposition ${message}`);
+            view.addComment(message);
+        })
+
+        // Init when we get the args 
+        electron.ipcRenderer.on("startInit", (event, message) => {
+            console.debug(`Received IPC Message: startInit ${message}`);
+            view.init(message)
+        });
+
+        // Select new build
+        require('electron').ipcRenderer.on("openNewBuild", (event, message) => {
+            console.debug(`Received IPC Message: openNewBuild ${message}`);
+            view.openNewBuild();
+        });
+
+        // Console Support - Disposition All 
+        function dispositionAll(module, errorType, file, line, disposition, comment, overwriteExisting)
+        {
+            view.dispositionAll(module, errorType, file, line, disposition, comment, overwriteExisting);
+        }
+
+        // Console Support - Print Summary
+        function printSummary()
+        {
+            view.printSummary();
+        }
+
+        // Console Support - Compare Builds
+        function compareBuilds(previousBuildName, currentBuildName)
+        {
+            view.compareBuilds(previousBuildName, currentBuildName);
+        }
+
+        // Font Sizes Larger / Smaller 
+        require('electron').ipcRenderer.on("modifyFontSize", (event, message) => {
+            console.debug(`Received IPC Message: modifyFontSize ${message}`);
+            var currentFontSize =  $("body").css("font-size");
+            currentFontSize = parseInt(currentFontSize.substring(0, currentFontSize.length - 2));
+            if(message == "+") {
+                $("body").css("font-size", (currentFontSize + 2).toString() + "px");
+
+            }
+            else if(message == "-") {
+                $("body").css("font-size", (currentFontSize - 2).toString() + "px");
+            }
+            
+        });
+    </script>
+
+    <!-- Main Nav -->
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark no-select" id="nav-parent">
+        <a class="navbar-brand" href="#"><span id="menu-project-name"></span> ScrubView <span id="menu-version" style="font-size: 0.5em">###</span></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <!-- <ul class="navbar-nav mr-auto justify-content-center"> -->
+
+                <!-- Build Dropdown -->
+                <!--<div><BuildList/></div> -->
+                
+
+                <!-- Module Dropdown -->
+                <!--<div><ModuleList/></div> -->
+
+            <!-- </ul> -->
+
+            <ul class="nav justify-content-end">
+                <div><ModeSelector/></div>
+            </ul>
+
+        </div>
+    </nav>
+
+    <div class="container-fluid m-0 p-0" style="height: calc(100vh - 75px);">
+        <div class="row no-gutters h-100">
+
+            <!-------------------------------->
+            <!-- File Browser Column--------->
+            <!-------------------------------->
+            <div class="col-3 section h-100" id="col-error-list">
+                <div class="row no-gutters h-100">
+                    <div class="section-header" id="file-list-header">File List</div>
+                    <FolderBrowser/>
+                </div>
+            </div>
+
+            <!-------------------------------->
+            <!-- Code Browser Column        -->
+            <!-------------------------------->
+            <div class="col-9 section h-100" id="col-file-browser"> 
+                <div class="row no-gutters h-50">
+                    <div class="section-header" id="code-header">Code Browser <span id="code-filename" style="font-weight:900;"></span></div>
+                    <div class="section-body"><FileBrowser/></div>
+                </div>
+
+                <div class="row no-gutters h-50">
+                    <div class="section-header" id="error-header">Error List</div>
+                   <ErrorList/>
+                </div>
+
+            </div>
+
+        </div> <!-- Main Row -->
+
+        <!-- Status Bar-->
+        <div class="row no-gutters" id="status-bar" style="height: 20px;">
+            <div class="col-12 m-0 p-0">
+                <LogMessageViewer/>
+            </div>
+        </div>
+    </div> <!-- Fluid Container -->
+
+    <!-- Error Modal -->
+    <div><ErrorModalDialog/></div>
+
+    <!-- Choice Modal -->
+    <div><ChoiceModalDialog/></div>
+
+    <!-- Loading Modal -->
+    <div><LoadingModalDialog/></div>
+
+    <!-- Registration Modal -->
+    <div><RegistrationDialog/></div>
+
+    <!-- Add Comment Modal -->
+    <div><CodeCommentModal/></div>
+
+</body>
+</html>

@@ -1,0 +1,33 @@
+<div class="modal fade" id="modal-code-comment" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" id="modal-code-comment-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-registration-title">Add Code Comment</h5>
+            </div>
+            <div class="modal-body" id="modal-registration-body">
+                <table>
+                    <tr>
+                        <td style="text-align: right; font-weight:bold;">Module:</td> 
+                        <td id="code-comment-modal-module"></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right; font-weight:bold;">File:</td>   
+                        <td id="code-comment-modal-filename"> </td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right; font-weight:bold;">Line:</td>
+                        <td id="code-comment-modal-line"></td>
+                    </tr>
+                </table>
+                <div>Comment:</div>
+                <textarea class="w-100" id="code-comment-modal-message"/>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" onclick="view.routeEvent('onCodeCommentCreated')">Add Comment</button>
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Cancel</button>
+            </div>
+
+        </div>
+    </div>
+</div>

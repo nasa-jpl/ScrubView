@@ -1,0 +1,572 @@
+:root
+{
+    /* Background Colors */
+    --color-background-shade0: rgb(35, 37, 43);
+    --color-background-shade1: rgb(54, 58, 64);
+    --color-background-shade1-trans: rgba(54, 58, 64, 0.5);
+    --color-background-shade2: rgb(42,44,54);
+
+    --color-background-hover0: rgb(74, 78, 84);
+    --color-background-hover1: rgb(45, 43, 53);
+
+    --color-background-blue0: rgba(0, 0, 255, 0.2);
+
+    /* Border Colors */
+    --color-border-shade0: #000;
+    --color-border-shade1: #333;
+    --color-border-shade2: #666;
+
+    /* Text Colors */
+    --color-text-primary: #eee;
+    --color-text-secondary: #999;
+    --color-text-highlight: lightblue;
+    --color-text-inactive: #666;
+
+    /* Other Colors */
+    --color-shadow0: #333;
+
+    /* Scroll Bars */
+    --color-scrollbar-track: rgb(35, 37, 43);
+    --color-scrollbar-thumb-background: rgb(56, 60, 70);
+    --color-scrollbar-thumb-border: rgb(66, 70, 80);
+    --color-scrollbar-thumb-hover: rgb(76, 80, 90);
+
+    /*-----Disposition Buttons ----------------------------------------------*/
+
+    /* None */
+    --color-none-inactive-background: rgba(100, 100, 100, 0.1);
+    --color-none-active-background: rgba(100, 100, 100, 1.0);
+    --color-none-inactive-text: #eee;
+    --color-none-active-text: #eee;
+
+    /* Green */
+    --color-green-inactive-background: rgba(0, 255, 0, 0.1);
+    --color-green-active-background: green;
+    --color-green-inactive-text: #999;
+    --color-green-active-text: white;
+
+    /* Orange */
+    --color-orange-inactive-background: rgba(255, 165, 0, 0.1);
+    --color-orange-active-background: orange;
+    --color-orange-inactive-text: #333;
+    --color-orange-active-text: black;
+
+    /* Red */
+    --color-red-inactive-background: rgba(255, 0, 0, 0.1);
+    --color-red-active-background: red;
+    --color-red-inactive-text: #999;
+    --color-red-active-text: white;
+
+    /*----- Code Browser -----------------------------------------------------*/
+    --color-code-error-background: rgba(255, 0, 0, 0.2);
+    --color-code-error-border: rgba(255, 0, 0, 0.4);
+
+    --color-code-path-background: rgba(255, 255, 0, 0.1);
+    --color-code-path-border: rgba(255, 255, 0, 0.3);
+
+    --color-code-comment-background: rgba(0, 0, 255, 0.2);
+    --color-code-comment-border: rgba(0, 0, 255, 0.4);
+
+    /* **/
+
+    --color-status-bar-background: rgba(33, 37, 43, 1.0);
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: var(--color-background-shade0);
+    overflow:hidden;
+    color: var(--color-text-primary);
+}
+
+textarea {
+    background: var(--color-background-shade0);
+    border: 1px solid var(--color-border-shade1);
+    color: var(--color-text-primary);
+    resize: none;
+}
+
+label {
+    color: var(--color-text-primary);
+    font-size: 0.8em;
+}
+
+pre {
+    border: 1px solid #666666;
+}
+
+code {
+    color: var(--color-text-primary) !important;
+    /* background-color: #333 !important; */
+}
+
+/*-------- Sizing  ----------------------------------------------------*/
+
+body {
+    height: 100vh;
+    width: 100vw;
+}
+
+#row-add-comment {
+    
+}
+
+
+/*-------- NavBar  ----------------------------------------------------*/
+.scrollable-menu {
+    height: auto;
+    max-height: 500px;
+    overflow-x: hidden;
+    background: var(--color-background-shade0);
+    color: var(--color-text-primary);
+    border-radius: 0px;
+}
+
+.no-select {
+    user-select: none;
+}
+
+#menu-buildlist, #menu-modulelist {
+    background: var(--color-background-shade1);
+    color: var(--color-text-primary);
+    border-radius: 3px;
+    border: 1px solid var(--color-border-shade1);
+    box-shadow: 3px 3px 5px var(--color-shadow0);
+}
+
+.menu-item {
+    background:var(--color-background-shade1);
+    color: var(--color-text-primary);
+    white-space: nowrap;
+    padding: 5px 5px 5px 5px;
+    margin: 0px;
+    display: block;
+}
+
+.menu-item:hover {
+    background:var(--color-background-hover0);
+}
+
+
+/*-------- Sections ----------------------------------------------------*/
+.section {
+    border: 1px solid var(--color-border-shade0);
+    background-color: var(--color-background-shade0);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.section-header {
+    background-color: var(--color-background-shade2);
+    border: 1px solid var(--color-border-shade1);
+    color: var(--color-text-primary);
+    text-transform: uppercase;
+    padding: 2px 10px 2px 10px;
+    font-size: 0.7em;
+    font-weight: 100;
+    height: 25px;
+    user-select: none;
+    width: 100%;
+    vertical-align: middle;
+    flex-shrink: 0;
+    font-weight: bold;
+}
+
+.section-body {
+    background-color: var(--color-background-shade0);
+    overflow-y: auto;
+    height: calc(100% - 25px);
+    width: 100%;
+}
+
+
+
+/*-------- Error  Sidebar ----------------------------------------------------*/
+
+.error-item {
+    color: var(--color-text-primary);
+    font-size: 0.8em;
+    border-bottom: 1px solid var(--color-border-shade1);
+    padding: 5px 5px 5px 5px;
+    margin-bottom: 10px;
+}
+
+.error-item-selected {
+    background: var( --color-background-shade1-trans);
+}
+
+/* .error-item:hover {
+    background-color: var(--color-background-hover1);
+    cursor: pointer;
+} */
+
+.error-item-title {
+    text-transform: uppercase;
+    font-size: 0.8em;
+    font-weight: bold;
+    color: var(--color-text-secondary);
+    vertical-align: center;
+}
+
+.error-item-path-div {
+    margin: 2px 2px 2px 10px;
+    border-top: 1px dotted var(--color-border-shade1)
+}
+
+.error-item-path-div:hover {
+    background-color: var(--color-background-hover1);
+    cursor: pointer;
+}
+
+.error-item-path-error {
+    color: lightcoral;
+}
+
+.error-item-description {
+    padding-top: 5px;
+}
+/*-------- Code Browser   ----------------------------------------------------*/
+
+.code-error-line {
+    background-color: var(--color-code-error-background);
+    border: 1px solid var(--color-code-error-border);
+}
+
+.code-comment-line {
+    background-color: var(--color-code-comment-background);
+    border: 1px solid var(--color-code-comment-border);
+}
+
+.code-path-line {
+    background-color: var(--color-code-path-background);
+    border: 1px solid var(--color-code-path-border);
+}
+
+#code-browser-contents {
+    border: none;
+    margin: 0px;
+}
+
+/* Debugging */
+.border-red {
+    border: 2px solid red;
+}
+
+.border-green {
+    border: 2px solid green;
+}
+
+.border-blue {
+    border: 2px solid blue;
+}
+
+/* Overrides for the Bootstrap Popover Class */
+.popover {
+    border: 1px solid var(--color-background-hover0);
+    box-shadow: 3px 3px 5px var(--color-shadow0);
+}
+
+.popover-header {
+    background-color: var(--color-background-shade1);
+    color: var(--color-text-primary);
+    border-bottom: 1px solid var(--var-border-shade2);
+}
+
+.popover-body {
+    background-color: var(--color-background-shade2);
+    color: var(--color-text-primary);
+}
+
+.arrow::after, .arrow::before {
+    color: var(--color-background-hover0);
+}
+
+/*-------- Comments ----------------------------------------------------*/
+
+#comment-parent {
+    height: 250px;
+}
+
+#row-comment-list-header {
+    cursor: pointer;
+}
+
+#comment-list {
+    list-style-type: none;
+    margin: 0px;
+    padding: 4px 0px 4px 0px;
+}
+
+#comment-list li {
+    border-bottom: 1px solid var(--color-border-shade1);
+    padding: 6px 10px 6px 10px;
+    color: var(--color-text-primary);
+    font-size: 0.8em;
+}
+
+.comment-title {
+    text-transform: uppercase;
+    font-size: 0.7em;
+    user-select: none;
+}
+
+.comment-text-area {
+    width: 100%;
+    font-size: 0.8em;
+    resize: none;
+}
+
+.comment-time {
+    font-size: 0.7em;
+    color: var(--color-text-secondary);
+}
+
+.comment-user {
+    font-size: 0.7em;
+    color: var(--color-text-primary);
+}
+
+#row-dev-disposition.hidden,
+#row-lead-disposition.hidden {
+    display: none;
+}
+
+
+#dev-disposition-none,
+#btn-disposition-developer.none,
+#lead-disposition-none,
+#btn-disposition-lead.none
+{
+    background: var(--color-none-inactive-background);
+    color: var(--color-none-inactive-text);
+    fill: var(--color-none-inactive-text);
+}
+
+#dev-disposition-none:hover,
+#lead-disposition-none:hover
+{
+    background: var(--color-none-active-background);
+    color: var(--color-none-active-text);
+    fill: var(--color-none-active-text);
+    transition: all 0.2s ease-in;
+}
+
+#dev-disposition-agree,
+#lead-disposition-noaction
+{
+    background: var(--color-disposition-green-inactive);
+    color: var(--color-green-inactive-text);
+    fill: var(--color-green-inactive-text);
+}
+
+#dev-disposition-agree:hover,
+#btn-disposition-developer.agree,
+#lead-disposition-noaction:hover,
+#btn-disposition-lead.noaction
+{
+    background: var(--color-green-active-background);
+    color: var(--color-green-active-text);
+    fill: var(--color-green-active-text);
+    transition: all 0.2s ease-in;
+}
+
+#dev-disposition-disagree 
+{
+   background: var(--color-red-inactive-background);
+    color: var(--color-red-inactive-text);
+    fill: var(--color-red-inactive-text);
+}
+
+#dev-disposition-disagree:hover,
+#btn-disposition-developer.disagree
+{
+    background: var(--color-red-active-background);
+    color: var(--color-red-active-text);
+    fill: var(--color-red-active-text);
+    transition: all 0.2s ease-in;
+}
+
+#dev-disposition-discuss,
+#lead-disposition-fixcode
+{
+   background: var(--color-orange-inactive-background);
+   color: var(--color-orange-inactive-text);
+   fill: var(--color-orange-inactive-text);
+}
+
+#dev-disposition-discuss:hover,
+#btn-disposition-developer.discuss,
+#lead-disposition-fixcode:hover,
+#btn-disposition-lead.fixcode
+{
+    background: var(--color-orange-active-background);
+    color: var(--color-orange-active-text);
+    fill: var(--color-orange-active-text);
+    transition: all 0.2s ease-in;
+}
+
+#btn-disposition-developer, 
+#btn-disposition-lead
+{
+    padding: 2px 10px 2px 10px;
+    border-radius: 3px;
+    border: 1px solid var(--color-border-shade0);
+    background: var(--color-background-shade1);
+    color: var(--color-text-primary);
+    font-size: 0.8em;
+}
+
+#dropdown-disposition-developer,
+#dropdown-disposition-lead
+{
+    border-radius: 3px;
+    background: var(--color-background-shade1);
+    color: var(--color-text-primary);
+    padding: 0px;
+    border: 1px solid var(--color-border-shade0);
+    box-shadow: 3px 3px 5px var(--color-shadow0);
+}
+
+/*-------- Scroll Bars ----------------------------------------------------*/
+/* width */
+::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+  
+/* Track */
+::-webkit-scrollbar-track {
+    background: var(--color-scrollbar-track);
+    border-left: 1px solid var( --color-scrollbar-thumb-background);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: var(--color-scrollbar-thumb-background);
+    border: 1px solid var(--color-scrollbar-thumb-border);
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-scrollbar-thumb-hover);
+}
+
+/* Corner Section */
+::-webkit-scrollbar-corner {
+    background: var(--color-scrollbar-track);
+}
+
+/*-------- SVG Classes ----------------------------------------------------*/
+/* NOTE: These classes are (mostly) empty, and serve really to allow JQuery  
+*        to select them to replace the SVG image */
+
+.svg-check {
+    height: 15px;
+    width: 15px;
+}
+
+.svg-x {
+    height: 15px;
+    width: 15px;
+}
+
+.svg-report {
+    height: 15px;
+    width: 15px;
+}
+
+.svg-bug {
+    height: 15px;
+    width: 15px;
+}
+
+/*-------- Modals ------------------------------------------------------------*/
+ #loadingModal {
+    user-select: none;
+} 
+
+#loadingModalContent {
+    background: var(--color-background-shade0);
+    color: var(--color-text-primary);
+}
+
+#modal-error-content, 
+#modal-choice-content,
+#modal-registration-content, 
+#modal-code-comment-content
+{
+    background: var(--color-background-shade0);
+    color: var(--color-text-primary);
+    font-size: 0.8em;
+}
+
+/*-------- Folder Browser -----------------------------------------------------*/
+/* Style the caret/arrow */
+
+#file-list ul {
+    cursor: pointer;
+    list-style-type: none;
+    user-select: none; /* Prevent text selection */
+    margin-left: 5px;
+    padding-left: 5px;
+}
+
+#file-list li {
+    margin-left: 5px;
+}
+  
+.nested {
+    display: none;
+  }
+  
+.active {
+    display: block;
+  }
+
+  /* Style the caret/arrow */
+.caret {
+    cursor: pointer;
+    user-select: none; /* Prevent text selection */
+  }
+  
+/* Create the caret/arrow with a unicode, and style it */
+.caret::before {
+    content: "\25B6";
+    color: var(--color-text-primary);
+    display: inline-block;
+    margin-right: 6px;
+}
+
+/* Rotate the caret/arrow icon when clicked on (using JavaScript) */
+.caret-down::before {
+    transform: rotate(90deg);
+}
+
+  /* File List */
+#file-list
+{
+    color: var(--color-text-primary);
+    fill: var(--color-text-primary);
+    list-style-type: none;
+    user-select: none;
+    margin: 0px;
+    padding: 2px, 5px, 2px, 5px;
+    font-size: 0.8em;
+}
+
+#file-list li:hover
+{
+    background: var(--color-background-hover1);
+    cursor: pointer;
+}
+
+#status-bar {
+    background-color: var(--color-status-bar-background);
+    color: var(--color-text-secondary);
+    font-size: 0.7em;
+    vertical-align: center;
+    padding-left: 10px;
+}

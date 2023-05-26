@@ -84,6 +84,7 @@ export function init(argsJSON : string)
     // Set the Project Name
     //$("#menu-project-name").text(state.configuration.projectConfiguration.name);
     $("#menu-version").text(state.configuration.programVersion);
+    // $("#current-dir").text(state.configuration.projectConfiguration.buildFolder);
 
     // Find the Builds
     // components.push(new BuildListComponent(state));

@@ -166,12 +166,14 @@ class ErrorListFilterSorter {
         if (this._state.selectedBuild == null || this._state.selectedModule == null || this._state.currentBrowserPath == null)
             return;
         // this._moduleList = this._state.selectedBuild.errors.getModuleReviewItemList(this._state.selectedModule);
+        $("#current-scope").text(this._state.currentBrowserPath);
         this._moduleList = this._state.selectedBuild.errors.getFolderReviewItemList(this._state.currentBrowserPath);
     }
     _updateFileItemList(filePath) {
         if (this._state.selectedBuild == null || this._state.selectedModule == null || this._state.currentBrowserPath == null)
             return;
         // this._moduleList = this._state.selectedBuild.errors.getModuleReviewItemList(this._state.selectedModule);
+        $("#current-scope").text(filePath);
         this._moduleList = this._state.selectedBuild.errors.getFileReviewItemList(filePath);
     }
     _setAllMatchActions(action) {

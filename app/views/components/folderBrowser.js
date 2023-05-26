@@ -52,6 +52,7 @@ class FolderBrowserComponent extends abstractComponent_1.AbstractComponent {
                 browserPath = path.join(this._state.currentBrowserPath, folder);
             }
             this._state.setCurrentBrowserPath(browserPath);
+            // $("#current-dir").text(browserPath);
             // Render results and display loading screen
             loadingModalDialog_1.LoadingModalDialog.show("Loading sub-directory results...", this.render.bind(this), true);
             // this.render();

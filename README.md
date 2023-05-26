@@ -6,5 +6,5 @@ ScrubView is built on the Node.js and Electron platforms and is a combination of
 Though not explicitly required, ScrubView is intended to be paired with [SCRUB](https://github.com/nasa/scrub) to provide the most streamlined experience.
 
 
-## [ScrubView Documentation](https://github.jpl.nasa.gov/pages/lbarner/ScrubView/)
+## [ScrubView Documentation](https://nasa-jpl.github.io/ScrubView/)
 

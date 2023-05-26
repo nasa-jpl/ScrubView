@@ -28,6 +28,7 @@ const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
 const abstractComponent_1 = require("./abstractComponent");
 const log_1 = require("../../types/utils/log");
+const loadingModalDialog_1 = require("./loadingModalDialog");
 let $ = require('jquery');
 class FolderBrowserComponent extends abstractComponent_1.AbstractComponent {
     constructor(state) {
@@ -51,7 +52,9 @@ class FolderBrowserComponent extends abstractComponent_1.AbstractComponent {
                 browserPath = path.join(this._state.currentBrowserPath, folder);
             }
             this._state.setCurrentBrowserPath(browserPath);
-            this.render();
+            // Render results and display loading screen
+            loadingModalDialog_1.LoadingModalDialog.show("Loading sub-directory results...", this.render.bind(this), true);
+            // this.render();
         });
     }
     render() {
@@ -89,6 +92,8 @@ class FolderBrowserComponent extends abstractComponent_1.AbstractComponent {
         // Add the Parent Folder
         $("#file-list").empty();
         this.addFolderToParent($("#file-list"), modulePath, ignoreList, false);
+        // Hide the loading screen
+        loadingModalDialog_1.LoadingModalDialog.hide();
     }
     addFolderToParent(parentElement, folderPath, ignoreList, nested) {
         var _a;
@@ -129,7 +134,7 @@ class FolderBrowserComponent extends abstractComponent_1.AbstractComponent {
         if (nested) {
             folderListElement = folderListElement.addClass("nested");
         }
-        parentElement.append(folderListElement);
+        // parentElement.append(folderListElement);
         // Load the Folders First
         // NOTE: This is recursive 
         for (let folder of folderList) {
@@ -142,7 +147,6 @@ class FolderBrowserComponent extends abstractComponent_1.AbstractComponent {
                 badgeStyling = `<span class="badge ${errorBadgeStyle}">${folderErrorList.length}</span>`;
             }
             // Add the folder to the list
-            // let newFolderElement = $(`<li><span onclick='view.routeEvent("onFolderClicked", "${folder}")'>${folder}  </span>${badgeStyling}</li>`);
             let newFolderElement = $(`<li><span ondblclick='view.routeEvent("onFolderClicked", "${folder}")'>${folder}  </span>${badgeStyling}</li>`);
             folderListElement.append(newFolderElement);
             // Add sub folders
@@ -150,6 +154,7 @@ class FolderBrowserComponent extends abstractComponent_1.AbstractComponent {
             //     this.addFolderToParent(newFolderElement, path.join(folderPath, folder), ignoreList, true);
             // }
         }
+        loadingModalDialog_1.LoadingModalDialog.updateProgress(50);
         // Then the Files
         for (let file of fileList) {
             // Get the file path
@@ -158,9 +163,10 @@ class FolderBrowserComponent extends abstractComponent_1.AbstractComponent {
             let fileErrorList = this._state.selectedBuild.errors.getFileReviewItemList(filePath);
             let errorBadgeStyle = fileErrorList.length == 0 ? "badge-dark" : "badge-warning";
             // Add the file to the list
-            // folderListElement.append(`<li onclick='view.routeEvent("onFileClicked", "${filePath}")'><img height="24px" width="24px" src="${this.getImagePath(filePath)}"><span class="svg-file" style="padding-right: 4px;"></span>${file}  <span class="badge ${errorBadgeStyle}">${fileErrorList.length}</span></li>`);
             folderListElement.append(`<li ondblclick='view.routeEvent("onFileClicked", "${filePath}")'><img height="24px" width="24px" src="${this.getImagePath(filePath)}"><span class="svg-file" style="padding-right: 4px;"></span>${file}  <span class="badge ${errorBadgeStyle}">${fileErrorList.length}</span></li>`);
         }
+        parentElement.append(folderListElement);
+        loadingModalDialog_1.LoadingModalDialog.updateProgress(100);
     }
     getImagePath(filePath) {
         // Icons from here:

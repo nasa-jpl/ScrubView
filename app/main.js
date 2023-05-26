@@ -154,9 +154,9 @@ function openNewBuild() {
         mainWindow.send("startInit", JSON.stringify(updatedArgs));
     });
 }
-function addDisposition(disposition) {
-    mainWindow.send("addDisposition", disposition);
-}
+// function addDisposition(disposition: string) {
+//     mainWindow.send("addDisposition", disposition);
+// }
 function modifyFontSize(modification) {
     mainWindow.send("modifyFontSize", modification);
 }

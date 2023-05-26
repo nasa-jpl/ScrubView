@@ -176,9 +176,9 @@ function openNewBuild() {
 
 }
 
-function addDisposition(disposition: string) {
-    mainWindow.send("addDisposition", disposition);
-}
+// function addDisposition(disposition: string) {
+//     mainWindow.send("addDisposition", disposition);
+// }
 
 function modifyFontSize(modification : string) {
     mainWindow.send("modifyFontSize", modification);

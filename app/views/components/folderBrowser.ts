@@ -3,6 +3,9 @@ import * as path from "path"
 import {AbstractComponent} from "./abstractComponent"
 import { StateManager } from "../stateManager";
 import { Log } from "../../types/utils/log";
+import { LoadingModalDialog } from './loadingModalDialog';
+import * as view from "../mainWindow"
+import { dialog } from "electron";
 let $ = require('jquery');
 
 
@@ -35,7 +38,11 @@ export class FolderBrowserComponent extends AbstractComponent
             }
                 
             this._state.setCurrentBrowserPath(browserPath);
-            this.render();
+
+            // Render results and display loading screen
+            LoadingModalDialog.show("Loading sub-directory results...", this.render.bind(this), true);
+            // this.render();
+
         });
     }
 
@@ -84,6 +91,9 @@ export class FolderBrowserComponent extends AbstractComponent
         // Add the Parent Folder
         $("#file-list").empty();
         this.addFolderToParent($("#file-list"), modulePath, ignoreList, false);
+
+        // Hide the loading screen
+        LoadingModalDialog.hide();        
     }
 
     private addFolderToParent(parentElement : JQuery, folderPath : string, ignoreList : string[], nested : boolean)
@@ -135,7 +145,7 @@ export class FolderBrowserComponent extends AbstractComponent
         if(nested) {
             folderListElement = folderListElement.addClass("nested");
         }
-        parentElement.append(folderListElement);
+        // parentElement.append(folderListElement);
 
         // Load the Folders First
         // NOTE: This is recursive 
@@ -152,7 +162,6 @@ export class FolderBrowserComponent extends AbstractComponent
             }
 
             // Add the folder to the list
-            // let newFolderElement = $(`<li><span onclick='view.routeEvent("onFolderClicked", "${folder}")'>${folder}  </span>${badgeStyling}</li>`);
             let newFolderElement = $(`<li><span ondblclick='view.routeEvent("onFolderClicked", "${folder}")'>${folder}  </span>${badgeStyling}</li>`);
             folderListElement.append(newFolderElement);
 
@@ -161,6 +170,8 @@ export class FolderBrowserComponent extends AbstractComponent
             //     this.addFolderToParent(newFolderElement, path.join(folderPath, folder), ignoreList, true);
             // }
         }
+
+        LoadingModalDialog.updateProgress(50);
 
         // Then the Files
         for(let file of fileList) {
@@ -172,9 +183,12 @@ export class FolderBrowserComponent extends AbstractComponent
             let errorBadgeStyle = fileErrorList.length == 0 ? "badge-dark" : "badge-warning";
 
             // Add the file to the list
-            // folderListElement.append(`<li onclick='view.routeEvent("onFileClicked", "${filePath}")'><img height="24px" width="24px" src="${this.getImagePath(filePath)}"><span class="svg-file" style="padding-right: 4px;"></span>${file}  <span class="badge ${errorBadgeStyle}">${fileErrorList.length}</span></li>`);
             folderListElement.append(`<li ondblclick='view.routeEvent("onFileClicked", "${filePath}")'><img height="24px" width="24px" src="${this.getImagePath(filePath)}"><span class="svg-file" style="padding-right: 4px;"></span>${file}  <span class="badge ${errorBadgeStyle}">${fileErrorList.length}</span></li>`);
         }
+
+        parentElement.append(folderListElement);
+
+        LoadingModalDialog.updateProgress(100);
 
     }
 

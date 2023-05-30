@@ -115,14 +115,14 @@ class ErrorListFilterSorter {
         this._state.on('sort.changed', (sortType) => {
             switch (sortType) {
                 case "none": this._sortType = SortTypes.None;
-                case "error":
-                    this._sortType = SortTypes.ByError;
-                    break;
                 case "file":
                     this._sortType = SortTypes.ByFile;
                     break;
                 case "tool":
                     this._sortType = SortTypes.ByTool;
+                    break;
+                case "priority":
+                    this._sortType = SortTypes.ByPriority;
                     break;
                 default:
                     log_1.Log.warning(`Invalid sort type: ${sortType}.`);
@@ -168,17 +168,26 @@ class ErrorListFilterSorter {
         this._updateFilteredList();
     }
     _updateModuleItemList() {
-        if (this._state.selectedBuild == null || this._state.selectedModule == null || this._state.currentBrowserPath == null)
+        var _a;
+        if (this._state.selectedBuild == null || this._state.selectedModule == null || this._state.currentBrowserPath == null || ((_a = this._state.configuration) === null || _a === void 0 ? void 0 : _a.projectConfiguration.buildFolder) == null)
             return;
-        // this._moduleList = this._state.selectedBuild.errors.getModuleReviewItemList(this._state.selectedModule);
-        $("#current-scope").text(this._state.currentBrowserPath);
+        let relativeDir = this._state.currentBrowserPath.replace(this._state.configuration.projectConfiguration.buildFolder, '');
+        if (relativeDir.startsWith('/')) {
+            relativeDir = relativeDir.substring(1);
+        }
+        $("#current-scope").text(` | ${relativeDir}`);
+        $("#relative-directory").text(` | ${relativeDir}`);
         this._moduleList = this._state.selectedBuild.errors.getFolderReviewItemList(this._state.currentBrowserPath);
     }
     _updateFileItemList(filePath) {
-        if (this._state.selectedBuild == null || this._state.selectedModule == null || this._state.currentBrowserPath == null)
+        var _a;
+        if (this._state.selectedBuild == null || this._state.selectedModule == null || this._state.currentBrowserPath == null || ((_a = this._state.configuration) === null || _a === void 0 ? void 0 : _a.projectConfiguration.buildFolder) == null)
             return;
-        // this._moduleList = this._state.selectedBuild.errors.getModuleReviewItemList(this._state.selectedModule);
-        $("#current-scope").text(filePath);
+        let relativeFilePath = filePath.replace(this._state.configuration.projectConfiguration.buildFolder, '');
+        if (relativeFilePath.startsWith('/')) {
+            relativeFilePath = relativeFilePath.substring(1);
+        }
+        $("#current-scope").text(` | ${relativeFilePath}`);
         this._moduleList = this._state.selectedBuild.errors.getFileReviewItemList(filePath);
     }
     _setAllMatchActions(action) {

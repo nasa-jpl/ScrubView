@@ -80,7 +80,7 @@
     <!-- Main Nav -->
     <nav class="navbar navbar-expand-md navbar-dark bg-dark no-select" id="nav-parent">
         <a class="navbar-brand" href="#"><span id="menu-project-name"></span> ScrubView <span id="menu-version" style="font-size: 0.5em">###</span></a>
-        
+
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <!-- <ul class="navbar-nav mr-auto justify-content-left"> -->
@@ -98,6 +98,10 @@
         </div>
     </nav>
 
+    <div style="font-size: 12px; color: var(--color-text-primary); display: inline; margin-left: 12px;" >
+            <B>PROJECT DIRECTORY: <span id="project-directory"></span></B> 
+    </div>
+
     <div class="container-fluid m-0 p-0" style="height: calc(100vh - 75px);">
         <div class="row no-gutters h-100">
 
@@ -106,7 +110,7 @@
             <!-------------------------------->
             <div class="col-3 section h-100" id="col-error-list">
                 <div class="row no-gutters h-100">
-                    <div class="section-header" id="file-list-header">File List</div>
+                    <div class="section-header" id="file-list-header">FILE LIST<span id="relative-directory"></span></div>
                     <FolderBrowser/>
                 </div>
             </div>
@@ -116,12 +120,12 @@
             <!-------------------------------->
             <div class="col-9 section h-100" id="col-file-browser"> 
                 <div class="row no-gutters h-50">
-                    <div class="section-header" id="code-header">Code Browser <span id="code-filename" style="font-weight:900;"></span></div>
+                    <div class="section-header" id="code-header">CODE BROWSER<span id="code-filename" style="font-weight:900;"></span></div>
                     <div class="section-body"><FileBrowser/></div>
                 </div>
 
                 <div class="row no-gutters h-50">
-                    <div class="section-header" id="error-header">Error List Scope: <span id="current-scope"></span></div>
+                    <div class="section-header" id="error-header">ERROR LIST</div>
                     <ErrorList/>
                 </div>
 

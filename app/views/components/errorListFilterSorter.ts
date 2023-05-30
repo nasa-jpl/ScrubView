@@ -6,6 +6,7 @@ import { CodeError } from "../../types/codeError";
 import { CodeComment } from "../../types/codeComment";
 import { ErrorListPaginationManager } from "./errorListPaginationManager";
 import { Log } from "../../types/utils/log";
+import * as path from 'path';
 import { readv } from "original-fs";
 
 enum SortTypes
@@ -214,21 +215,30 @@ export class ErrorListFilterSorter
 
     private _updateModuleItemList()
     {
-        if(this._state.selectedBuild == null || this._state.selectedModule == null || this._state.currentBrowserPath == null)
+        if(this._state.selectedBuild == null || this._state.selectedModule == null || this._state.currentBrowserPath == null || this._state.configuration?.projectConfiguration.buildFolder == null)
             return;
 
-        // this._moduleList = this._state.selectedBuild.errors.getModuleReviewItemList(this._state.selectedModule);
-        $("#current-scope").text(this._state.currentBrowserPath);
+        let relativeDir = this._state.currentBrowserPath.replace(this._state.configuration.projectConfiguration.buildFolder, '');
+        if (relativeDir.startsWith('/')) {
+            relativeDir = relativeDir.substring(1);
+        }
+
+        $("#current-scope").text(` | ${relativeDir}`);
+        $("#relative-directory").text(` | ${relativeDir}`); 
         this._moduleList = this._state.selectedBuild.errors.getFolderReviewItemList(this._state.currentBrowserPath);
     }
 
     private _updateFileItemList(filePath : string)
     {
-        if(this._state.selectedBuild == null || this._state.selectedModule == null || this._state.currentBrowserPath == null)
+        if(this._state.selectedBuild == null || this._state.selectedModule == null || this._state.currentBrowserPath == null || this._state.configuration?.projectConfiguration.buildFolder == null)
             return;
 
-        // this._moduleList = this._state.selectedBuild.errors.getModuleReviewItemList(this._state.selectedModule);
-        $("#current-scope").text(filePath);
+        let relativeFilePath = filePath.replace(this._state.configuration.projectConfiguration.buildFolder, '');
+        if (relativeFilePath.startsWith('/')) {
+            relativeFilePath = relativeFilePath.substring(1);
+        }
+
+        $("#current-scope").text(` | ${relativeFilePath}`);
         this._moduleList = this._state.selectedBuild.errors.getFileReviewItemList(filePath);
     }
 

@@ -11,6 +11,8 @@ var SortTypes;
     SortTypes[SortTypes["None"] = 0] = "None";
     SortTypes[SortTypes["ByFile"] = 1] = "ByFile";
     SortTypes[SortTypes["ByError"] = 2] = "ByError";
+    SortTypes[SortTypes["ByPriority"] = 3] = "ByPriority";
+    SortTypes[SortTypes["ByTool"] = 4] = "ByTool";
 })(SortTypes || (SortTypes = {}));
 var MatchAction;
 (function (MatchAction) {
@@ -118,6 +120,9 @@ class ErrorListFilterSorter {
                     break;
                 case "file":
                     this._sortType = SortTypes.ByFile;
+                    break;
+                case "tool":
+                    this._sortType = SortTypes.ByTool;
                     break;
                 default:
                     log_1.Log.warning(`Invalid sort type: ${sortType}.`);
@@ -261,6 +266,10 @@ class ErrorListFilterSorter {
                         // Files are the same, sort by line number
                         return a.lineNumber - b.lineNumber;
                     }
+                }
+                else if (this._sortType == SortTypes.ByTool) {
+                    let rVal = naturalCompare(a.id, b.id);
+                    return rVal;
                 }
                 else {
                     // Sort by Error Type

@@ -6,12 +6,15 @@ import { CodeError } from "../../types/codeError";
 import { CodeComment } from "../../types/codeComment";
 import { ErrorListPaginationManager } from "./errorListPaginationManager";
 import { Log } from "../../types/utils/log";
+import { readv } from "original-fs";
 
 enum SortTypes
 {
     None, 
     ByFile,
-    ByError
+    ByError,
+    ByPriority,
+    ByTool
 }
 
 enum MatchAction
@@ -142,8 +145,9 @@ export class ErrorListFilterSorter
             switch(sortType)
             {
                 case "none" : this._sortType = SortTypes.None;
-                case "error": this._sortType = SortTypes.ByError; break;
                 case "file": this._sortType = SortTypes.ByFile; break;
+                case "tool": this._sortType = SortTypes.ByTool; break;
+                case "priority": this._sortType = SortTypes.ByPriority; break;
                 default:
                     Log.warning(`Invalid sort type: ${sortType}.`);
                     return;
@@ -344,6 +348,11 @@ export class ErrorListFilterSorter
                         // Files are the same, sort by line number
                         return a.lineNumber - b.lineNumber;
                     }
+
+                } else if(this._sortType == SortTypes.ByTool) {
+                    let rVal = naturalCompare(a.id, b.id);
+
+                    return rVal;
 
                 } else {
                     // Sort by Error Type

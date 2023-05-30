@@ -133,6 +133,21 @@
             </div>
         </div>
 
+        <!------------------->
+        <!-- Sort Dropdown -->
+        <!------------------->
+        <div class="dropdown filter-menu" style="display:inline;">
+            <button class="btn btn-default dropdown-toggle filter-sort-btn" type="button" data-toggle="dropdown">
+                <object type="image/svg+xml" data="img/sort.svg" style="width: 15px; height: 15px; margin: 0; padding: 4px 0 0 0;"></object>
+                Sort
+            </button>
+            <div class="dropdown-menu" id="sort-menu">
+                <a tabindex="-1" href="#" onclick="view.routeEvent('sort.changed', 'none')">None</a>
+                <a tabindex="-1" href="#" onclick="view.routeEvent('sort.changed', 'file')">By File</a>
+                <a tabindex="-1" href="#" onclick="view.routeEvent('sort.changed', 'tool')">By Tool</a>
+            </div>
+        </div>
+
 
 
 

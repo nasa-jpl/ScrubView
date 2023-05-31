@@ -8,6 +8,7 @@ import * as view from "../mainWindow"
 import { dialog } from "electron";
 let $ = require('jquery');
 
+let paddingLength = 30;
 
 export class FolderBrowserComponent extends AbstractComponent
 {
@@ -23,7 +24,6 @@ export class FolderBrowserComponent extends AbstractComponent
 
         // Subscribe to onFolderClicked
         this.eventSubscribe("onFolderClicked", (folder) => {
-            // this._state.setSelectedModule(folder);
             if(this._state.currentBrowserPath == null){
                 Log.error('Unable to find current working directory.');
                 return;
@@ -38,11 +38,9 @@ export class FolderBrowserComponent extends AbstractComponent
             }
                 
             this._state.setCurrentBrowserPath(browserPath);
-            // $("#current-dir").text(browserPath);
 
             // Render results and display loading screen
             LoadingModalDialog.show("Loading sub-directory results...", this.render.bind(this), true);
-            // this.render();
 
         });
     }
@@ -68,8 +66,6 @@ export class FolderBrowserComponent extends AbstractComponent
             return;
         }
 
-        // let modulePath = path.join(buildSettings.buildFolder, this._state.selectedModule);
-        // let modulePath = this._state.selectedModule;
         if(this._state.currentBrowserPath == null){
             Log.error('Unable to find current working directory.');
             return;
@@ -146,7 +142,6 @@ export class FolderBrowserComponent extends AbstractComponent
         if(nested) {
             folderListElement = folderListElement.addClass("nested");
         }
-        // parentElement.append(folderListElement);
 
         // Load the Folders First
         // NOTE: This is recursive 
@@ -162,14 +157,16 @@ export class FolderBrowserComponent extends AbstractComponent
                 badgeStyling = `<span class="badge ${errorBadgeStyle}">${folderErrorList.length}</span>`;
             }
 
+            // Determine how much padding to add
+            let padding = '';
+            if (folder.length < paddingLength) {
+                padding = '&nbsp'.repeat(paddingLength - folder.length);
+            }
+
             // Add the folder to the list
-            let newFolderElement = $(`<li><span ondblclick='view.routeEvent("onFolderClicked", "${folder}")'>${folder}  </span>${badgeStyling}</li>`);
+            let newFolderElement = $(`<li><span ondblclick='view.routeEvent("onFolderClicked", "${folder}")'>${folder}  ${badgeStyling} ${padding}</span></li>`);
             folderListElement.append(newFolderElement);
 
-            // Add sub folders
-            // if(folder !== '..') {
-            //     this.addFolderToParent(newFolderElement, path.join(folderPath, folder), ignoreList, true);
-            // }
         }
 
         LoadingModalDialog.updateProgress(50);
@@ -183,8 +180,14 @@ export class FolderBrowserComponent extends AbstractComponent
             let fileErrorList = this._state.selectedBuild.errors.getFileReviewItemList(filePath);
             let errorBadgeStyle = fileErrorList.length == 0 ? "badge-dark" : "badge-warning";
 
+            // Determine how much padding to add
+            let padding = '';
+            if (file.length < paddingLength) {
+                padding = '&nbsp'.repeat(paddingLength - file.length);
+            }
+
             // Add the file to the list
-            folderListElement.append(`<li ondblclick='view.routeEvent("onFileClicked", "${filePath}")'><img height="24px" width="24px" src="${this.getImagePath(filePath)}"><span class="svg-file" style="padding-right: 4px;"></span>${file}  <span class="badge ${errorBadgeStyle}">${fileErrorList.length}</span></li>`);
+            folderListElement.append(`<li ondblclick='view.routeEvent("onFileClicked", "${filePath}")'><img height="24px" width="24px" src="${this.getImagePath(filePath)}"><span class="svg-file" style="padding-right: 4px;"></span>${file}  <span class="badge ${errorBadgeStyle}">${fileErrorList.length}</span>${padding}</li>`);
         }
 
         parentElement.append(folderListElement);

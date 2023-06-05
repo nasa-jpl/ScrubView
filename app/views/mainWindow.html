@@ -108,7 +108,7 @@
             <!-------------------------------->
             <!-- File Browser Column--------->
             <!-------------------------------->
-            <div class="col-3 section h-100" id="col-error-list">
+            <div class="section h-100" id="col-error-list" style="display: flex;overflow: auto;resize: horizontal;width: 25%;">
                 <div class="row no-gutters h-100">
                     <div class="section-header" id="file-list-header">FILE LIST<span id="relative-directory"></span></div>
                     <FolderBrowser/>
@@ -118,13 +118,13 @@
             <!-------------------------------->
             <!-- Code Browser Column        -->
             <!-------------------------------->
-            <div class="col-9 section h-100" id="col-file-browser"> 
-                <div class="row no-gutters h-50">
+            <div class="section h-100" id="col-file-browser" style="width: 75%;display: flex;overflow: auto;flex: auto;flex: 1 1 0%"> 
+                <div class="row no-gutters ">
                     <div class="section-header" id="code-header">CODE BROWSER<span id="code-filename" style="font-weight:900;"></span></div>
                     <div class="section-body"><FileBrowser/></div>
                 </div>
 
-                <div class="row no-gutters h-50">
+                <div class="row no-gutters">
                     <div class="section-header" id="error-header">ERROR LIST</div>
                     <ErrorList/>
                 </div>

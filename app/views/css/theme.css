@@ -170,13 +170,11 @@ body {
     user-select: none;
     width: 100%;
     vertical-align: middle;
-    flex-shrink: 0;
     font-weight: bold;
 }
 
 .section-body {
     background-color: var(--color-background-shade0);
-    overflow-y: auto;
     height: calc(100% - 25px);
     width: 100%;
 }
@@ -247,6 +245,7 @@ body {
 #code-browser-contents {
     border: none;
     margin: 0px;
+    resize: vertical;
 }
 
 /* Debugging */

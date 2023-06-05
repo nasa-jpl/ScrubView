@@ -224,7 +224,7 @@ class ErrorTile extends abstractComponent_1.AbstractComponent {
             <button id="error-toggle-btn-${this._error.hash}"  class="btn btn-secondary btn-sm" onclick="view.routeEvent('onErrorPathToggle', '${this._error.hash}')" style="margin-top: 5px;">
                 ${buttonText}
             </button>
-            <div class="collapse ${this._isErrorPathExpanded ? "show" : ""}" id="${errorPathId}" style="background:unset">
+            <div class="collapse ${this._isErrorPathExpanded ? "show" : ""}" id="${errorPathId}" style="background:unset;">
                 <div class="card card-body" style="background:unset; padding: 0px;">
                     ${errorPathTable}
                 </div>

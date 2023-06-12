@@ -157,14 +157,8 @@ export class FolderBrowserComponent extends AbstractComponent
                 badgeStyling = `<span class="badge ${errorBadgeStyle}">${folderErrorList.length}</span>`;
             }
 
-            // Determine how much padding to add
-            let padding = '';
-            if (folder.length < paddingLength) {
-                padding = '&nbsp'.repeat(paddingLength - folder.length);
-            }
-
             // Add the folder to the list
-            let newFolderElement = $(`<li><span ondblclick='view.routeEvent("onFolderClicked", "${folder}")'>${folder}  ${badgeStyling} ${padding}</span></li>`);
+            let newFolderElement = $(`<li><span style="display:flex;align-items: center;" ondblclick='view.routeEvent("onFolderClicked", "${folder}")'>${folder}  ${badgeStyling}</span></li>`);
             folderListElement.append(newFolderElement);
 
         }
@@ -180,14 +174,8 @@ export class FolderBrowserComponent extends AbstractComponent
             let fileErrorList = this._state.selectedBuild.errors.getFileReviewItemList(filePath);
             let errorBadgeStyle = fileErrorList.length == 0 ? "badge-dark" : "badge-warning";
 
-            // Determine how much padding to add
-            let padding = '';
-            if (file.length < paddingLength) {
-                padding = '&nbsp'.repeat(paddingLength - file.length);
-            }
-
             // Add the file to the list
-            folderListElement.append(`<li ondblclick='view.routeEvent("onFileClicked", "${filePath}")'><img height="24px" width="24px" src="${this.getImagePath(filePath)}"><span class="svg-file" style="padding-right: 4px;"></span>${file}  <span class="badge ${errorBadgeStyle}">${fileErrorList.length}</span>${padding}</li>`);
+            folderListElement.append(`<li style="display:flex;align-items: center;" ondblclick='view.routeEvent("onFileClicked", "${filePath}")'><img height="24px" width="24px" src="${this.getImagePath(filePath)}"><span class="svg-file" style="padding-right: 4px;"></span>${file}  <span class="badge ${errorBadgeStyle}">${fileErrorList.length}</span></li>`);
         }
 
         parentElement.append(folderListElement);

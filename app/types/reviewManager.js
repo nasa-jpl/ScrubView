@@ -58,7 +58,7 @@ class ReviewManager {
             }
         }
         else {
-            log_1.Log.warning(`Combined JSON file was not found at: ${combinedFilePath}`);
+            // Log.warning(`Combined JSON file was not found at: ${combinedFilePath}`);
             this._reviewedErrors = new Array();
             this._reviewedModules = new Array();
         }

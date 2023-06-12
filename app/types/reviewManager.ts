@@ -50,7 +50,7 @@ export class ReviewManager
         }
         else
         {
-            Log.warning(`Combined JSON file was not found at: ${combinedFilePath}`);
+            // Log.warning(`Combined JSON file was not found at: ${combinedFilePath}`);
             this._reviewedErrors = new Array<AbstractReviewItem>();
             this._reviewedModules = new Array<string>();
         }

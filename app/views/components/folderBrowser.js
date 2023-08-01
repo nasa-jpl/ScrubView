@@ -154,11 +154,6 @@ class FolderBrowserComponent extends abstractComponent_1.AbstractComponent {
             // Get the error count for the folder
             let fileErrorList = this._state.selectedBuild.errors.getFileReviewItemList(filePath);
             let errorBadgeStyle = fileErrorList.length == 0 ? "badge-dark" : "badge-warning";
-            // // Determine how much padding to add
-            // let padding = '';
-            // if (file.length < paddingLength) {
-            //     padding = '&nbsp'.repeat(paddingLength - file.length);
-            // }
             // Add the file to the list
             folderListElement.append(`<li style="display:flex;align-items: center;" ondblclick='view.routeEvent("onFileClicked", "${filePath}")'><img height="24px" width="24px" src="${this.getImagePath(filePath)}"><span class="svg-file" style="padding-right: 4px;"></span>${file}  <span class="badge ${errorBadgeStyle}">${fileErrorList.length}</span></li>`);
         }

@@ -67,11 +67,13 @@ class SarifParser extends abstractParser_1.AbstractParser {
             // Parse the Code Flows
             let errorSteps = new Array();
             if (resultObject.codeFlows != undefined) {
-                for (let step of resultObject.codeFlows[0].threadFlows[0].locations) {
+                for (let thread of resultObject.codeFlows[0].threadFlows) {
                     // Get the location
-                    let threadLocation = this._getFileInfoFromObject(step.location, fileArray, buildPath);
+                    // let threadLocation = this._getFileInfoFromObject(step.location, fileArray, buildPath);
+                    let threadLocation = fileLocation_1.FileLocation.fromAnalyzerPath(thread.locations[0].location.physicalLocation.artifactLocation.uri, thread.locations[0].location.physicalLocation.region.startLine, buildPath);
                     // Get the Message Text
-                    let messageText = `${step.kind} - ${step.location.message.text}`;
+                    // let messageText = `${step.kind} - ${step.location.message.text}`;
+                    let messageText = thread.message.text;
                     // Create the object 
                     let errorStep = new codeError_1.ErrorPathStep(threadLocation, messageText);
                     // Add to the Array
@@ -79,7 +81,13 @@ class SarifParser extends abstractParser_1.AbstractParser {
                 }
             }
             // Get the warning description
-            let scrubFormatDesc = resultObject.message.text;
+            let scrubFormatDesc = '';
+            if (this._name == 'coverity') {
+                scrubFormatDesc = resultObject.message.text.split("\n")[1];
+            }
+            else {
+                scrubFormatDesc = resultObject.message.text;
+            }
             // Create the New Error
             let newError = new codeError_1.CodeError(this._getNextErrorId(), this._name, errorFileLocation, resultObject.ruleId, scrubFormatDesc.replace(/\n/gi, "<br>"), undefined, // Hash
             errorSteps);

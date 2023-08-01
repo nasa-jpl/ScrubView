@@ -220,8 +220,8 @@ class ErrorTile extends abstractComponent_1.AbstractComponent {
             let errorPathId = `errorPath-${renderError.hash}`;
             // Output the Body
             return `
-            <div>${renderError.errorPath[renderError.errorPath.length - 1].message}</div>
-            <button id="error-toggle-btn-${this._error.hash}"  class="btn btn-secondary btn-sm" onclick="view.routeEvent('onErrorPathToggle', '${this._error.hash}')" style="margin-top: 5px;">
+            <div>${renderError.errorPath[0].message}</div>
+            <button style="font-size: 10px" id="error-toggle-btn-${this._error.hash}"  class="btn btn-secondary btn-sm" onclick="view.routeEvent('onErrorPathToggle', '${this._error.hash}')" style="margin-top: 5px;">
                 ${buttonText}
             </button>
             <div class="collapse ${this._isErrorPathExpanded ? "show" : ""}" id="${errorPathId}" style="background:unset;">

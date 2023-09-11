@@ -29,6 +29,7 @@ import { RegistrationDialog } from './components/registrationDialog';
 import { LogMessageViewer } from './components/logMessageViewer';
 import { CodeCommentModal } from './components/codeCommentModal';
 import { CodeError } from '../types/codeError';
+import { CodeMetrics } from '../types/codeMetrics';
 import { CodeComment } from '../types/codeComment';
 
 // State
@@ -112,6 +113,11 @@ export function init(argsJSON : string)
         return;
     }
     state.setSelectedBuild(newBuild);
+
+    // Load the metrics data
+    if (newBuild.metrics.length > 0) {
+        loadMetrics(newBuild.metrics);
+    }
 
     // Is the current registered? If not, show the registration dialog
     if(!userCollection.userIsRegistered(state.configuration.currentUser))
@@ -315,6 +321,22 @@ export function printSummary()
         // Console 
         Log.message(`${module},${totalReviewItems},${hasDeveloperDiposition},${hasLeadDisposition}`)
     }
+}
+
+
+export function loadMetrics(metricsData : Array<CodeMetrics>)
+{
+    // Print a status message
+    Log.debug(`Attempting to load ${metricsData.length} metrics items...`);
+
+    // $("#metrics-list").text("Successful Test")
+    $("#metrics-list").append("<tr><th>Tool</th><th>Number of Files</th><th>Number of Functions</th><th>Physical Lines</th><th>Lines of Code</th></tr>")
+    
+    // Add all of the metrics numbers
+    metricsData.forEach( (element) => {
+        $("#metrics-list").append(`<tr><td>${element.tool}</td><td>${element.numberOfFiles}</td><td>${element.numberOfFunctions}</td><td>${element.physicalLines}</td><td>${element.linesOfCode}</td></tr>`)
+    })
+
 }
 
 export function compareBuilds(previousBuildName : string, currentBuildName : string)

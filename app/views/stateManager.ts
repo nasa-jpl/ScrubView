@@ -4,6 +4,7 @@ import { Build } from "../types/buildParser";
 import { UserCollection } from "../types/userCollection";
 import { Log } from "../types/utils/log"
 import { AbstractReviewItem } from "../types/abstractReviewItem";
+// import { CodeMetrics } from "../types/codeMetrics";
 
 export enum DisplayMode {
     Disposition,
@@ -70,6 +71,11 @@ export class StateManager extends EventEmitter
         Log.debug("Build List Changed");
         this.emit("onBuildListChanged", this._buildList);
     }
+
+    // public setMetricsTable(metricsList : Array<CodeMetrics>)
+    // {
+    //     this.emit("onMetricsRequested", metricsList)
+    // }
 
     public setUserCollection(userCollection : UserCollection)
     {

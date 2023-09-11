@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.StateManager = exports.DisplayMode = void 0;
 const events_1 = require("events");
 const log_1 = require("../types/utils/log");
+// import { CodeMetrics } from "../types/codeMetrics";
 var DisplayMode;
 (function (DisplayMode) {
     DisplayMode[DisplayMode["Disposition"] = 0] = "Disposition";
@@ -48,6 +49,10 @@ class StateManager extends events_1.EventEmitter {
         log_1.Log.debug("Build List Changed");
         this.emit("onBuildListChanged", this._buildList);
     }
+    // public setMetricsTable(metricsList : Array<CodeMetrics>)
+    // {
+    //     this.emit("onMetricsRequested", metricsList)
+    // }
     setUserCollection(userCollection) {
         this._users = userCollection;
     }

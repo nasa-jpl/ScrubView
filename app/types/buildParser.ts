@@ -7,6 +7,8 @@ import { ReviewItemCollection } from "./reviewItemCollection"
 import { CodeError } from "./codeError"
 import { SarifParser } from './parsers/sarif';
 import { ScrubParser } from './parsers/scrub'
+import { MetricsParser } from './parsers/metricsParser';
+import { CodeMetrics } from './codeMetrics';
 import { ReviewManager } from './reviewManager';
 import { ErrorModalDialog } from '../views/components/errorModalDialog';
 import { Log } from "./utils/log"
@@ -23,6 +25,7 @@ export class Build
     protected _buildCodePath : string;
     protected _buildScrubPath : string;
     protected _errors : ReviewItemCollection;
+    protected _metrics : Array<CodeMetrics>;
     protected _modules : Array<string>;
     protected _reviewManager : ReviewManager;
 
@@ -31,16 +34,18 @@ export class Build
     get codePath() : string {return this._buildCodePath; }
     get scrubPath() : string { return this._buildScrubPath; }
     get errors() : ReviewItemCollection {return this._errors; }
+    get metrics() : Array<CodeMetrics> {return this._metrics; }
     get modules() : Array<string> { return this._modules; }
     get reviewManager() : ReviewManager { return this._reviewManager; }
     
 
-    constructor(name : string, buildCodePath : string, buildScrubPath : string, errors : ReviewItemCollection, modules : Array<string>)
+    constructor(name : string, buildCodePath : string, buildScrubPath : string, errors : ReviewItemCollection, metrics : Array<CodeMetrics>, modules : Array<string>)
     {      
         this._name = name;
         this._buildCodePath = buildCodePath;
         this._buildScrubPath = buildScrubPath;
         this._errors = errors;
+        this._metrics = metrics;
         this._modules = modules;
         this._reviewManager = new ReviewManager(this);
     }
@@ -103,7 +108,10 @@ export function parseBuild(buildName: string, state : StateManager ) : Build | n
     let toolCount = projectOptions.tools.length;
     let toolIndex = 0;
 
-    // Read the tool error files
+    // Create a metric collection
+    let metricsCollection = new Array;
+
+    // Read the tool error files and metrics files if they exist
     for(let toolEntry of projectOptions.tools)
     {
         // Create the tool output path
@@ -122,14 +130,6 @@ export function parseBuild(buildName: string, state : StateManager ) : Build | n
         let parser : ap.AbstractParser;
         switch(toolEntry.parser)
         {
-            // case "coverity":
-            //     parser = new CoverityParser(toolEntry.name, toolEntry.prefix);
-            //     break;
-
-            // case "codesonar":
-            //     parser = new CodeSonarParser(toolEntry.name, toolEntry.prefix);
-            //     break;
-
             case "sarif":
                 parser = new SarifParser(toolEntry.name, toolEntry.prefix);
                 break;
@@ -143,6 +143,17 @@ export function parseBuild(buildName: string, state : StateManager ) : Build | n
                 LoadingModalDialog.hide();
                 ErrorModalDialog.show("Project Configuration Error", `Unknown parser ${toolEntry.parser} for tool ${toolEntry.name}. Contact your scrub administrator.`);
                 return null;
+        }
+
+        // Does a metrics file exist?
+        if(toolEntry.metricsFile.length > 0) {
+            let metricParser = new MetricsParser();
+
+            // Resolve any symbolic links
+            let toolMetricsFilePath = fs.realpathSync(path.join(scrubDirPath, toolEntry.metricsFile));
+        
+            // Parse the metrics file
+            metricsCollection.push(metricParser.parseFile(toolMetricsFilePath))        
         }
 
         // Verify we have exclusions set up properly
@@ -215,9 +226,8 @@ export function parseBuild(buildName: string, state : StateManager ) : Build | n
     errorCollection.setInitComplete();
 
     // Create the Build Object
-    // let buildScrubFolder = path.join(projectOptions.scrubFolder, buildName);
     let buildScrubFolder = projectOptions.scrubFolder;
-    let newBuildObject = new Build(buildName, buildSrcDir, buildScrubFolder, errorCollection, modules);
+    let newBuildObject = new Build(buildName, buildSrcDir, buildScrubFolder, errorCollection, metricsCollection, modules);
     return newBuildObject;
 }
 

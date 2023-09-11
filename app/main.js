@@ -8,6 +8,7 @@ const commandLineArgs_1 = require("./types/utils/commandLineArgs");
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
 let compareWindow;
+let metricsWindow;
 // Get the Command Line Arguments
 let args = commandLineArgs_1.CommandLineArgs.parse();
 function createWindow() {
@@ -96,6 +97,7 @@ function createWindow() {
                 label: "ScrubView",
                 submenu: [
                     { label: 'Load new project...', click() { openNewBuild(); } },
+                    // {label: 'Display Metrics', click() { openMetricsWindow() }},
                     { role: "about" },
                     { label: 'Quit', click() { electron_1.app.quit(); } }
                 ]
@@ -160,6 +162,26 @@ function openNewBuild() {
 function modifyFontSize(modification) {
     mainWindow.send("modifyFontSize", modification);
 }
+// function openMetricsWindow() 
+// {
+//     // Create the compare window (which is modal)
+//     metricsWindow = new BrowserWindow({
+//         width: 600,
+//         height: 300,
+//         parent: mainWindow,
+//         modal: true,
+//         webPreferences: {
+//             nodeIntegration: true,
+//             sandbox: false
+//         }
+//     });
+//     // and load the index.html of the app
+//     metricsWindow.loadFile('app/views/metricsWindow.html')
+//     // Emitted when the window is closed.
+//     metricsWindow.on('closed', function () {
+//         metricsWindow = null;
+//     });
+// }
 function openCompareWindow() {
     // Create the compare window (which is modal)
     compareWindow = new electron_1.BrowserWindow({

@@ -29,6 +29,7 @@ const path = __importStar(require("path"));
 const reviewItemCollection_1 = require("./reviewItemCollection");
 const sarif_1 = require("./parsers/sarif");
 const scrub_1 = require("./parsers/scrub");
+const metricsParser_1 = require("./parsers/metricsParser");
 const reviewManager_1 = require("./reviewManager");
 const errorModalDialog_1 = require("../views/components/errorModalDialog");
 const log_1 = require("./utils/log");
@@ -36,11 +37,12 @@ const loadingModalDialog_1 = require("../views/components/loadingModalDialog");
 const commentObjects_1 = require("./commentObjects");
 const codeComment_1 = require("./codeComment");
 class Build {
-    constructor(name, buildCodePath, buildScrubPath, errors, modules) {
+    constructor(name, buildCodePath, buildScrubPath, errors, metrics, modules) {
         this._name = name;
         this._buildCodePath = buildCodePath;
         this._buildScrubPath = buildScrubPath;
         this._errors = errors;
+        this._metrics = metrics;
         this._modules = modules;
         this._reviewManager = new reviewManager_1.ReviewManager(this);
     }
@@ -49,6 +51,7 @@ class Build {
     get codePath() { return this._buildCodePath; }
     get scrubPath() { return this._buildScrubPath; }
     get errors() { return this._errors; }
+    get metrics() { return this._metrics; }
     get modules() { return this._modules; }
     get reviewManager() { return this._reviewManager; }
 }
@@ -100,7 +103,9 @@ function parseBuild(buildName, state) {
     let errorCollection = new reviewItemCollection_1.ReviewItemCollection(scrubDirPath);
     let toolCount = projectOptions.tools.length;
     let toolIndex = 0;
-    // Read the tool error files
+    // Create a metric collection
+    let metricsCollection = new Array;
+    // Read the tool error files and metrics files if they exist
     for (let toolEntry of projectOptions.tools) {
         // Create the tool output path
         let toolOutputFilePath = path.join(scrubDirPath, toolEntry.resultsFile);
@@ -116,12 +121,6 @@ function parseBuild(buildName, state) {
         // Parse the Tool
         let parser;
         switch (toolEntry.parser) {
-            // case "coverity":
-            //     parser = new CoverityParser(toolEntry.name, toolEntry.prefix);
-            //     break;
-            // case "codesonar":
-            //     parser = new CodeSonarParser(toolEntry.name, toolEntry.prefix);
-            //     break;
             case "sarif":
                 parser = new sarif_1.SarifParser(toolEntry.name, toolEntry.prefix);
                 break;
@@ -133,6 +132,14 @@ function parseBuild(buildName, state) {
                 loadingModalDialog_1.LoadingModalDialog.hide();
                 errorModalDialog_1.ErrorModalDialog.show("Project Configuration Error", `Unknown parser ${toolEntry.parser} for tool ${toolEntry.name}. Contact your scrub administrator.`);
                 return null;
+        }
+        // Does a metrics file exist?
+        if (toolEntry.metricsFile.length > 0) {
+            let metricParser = new metricsParser_1.MetricsParser();
+            // Resolve any symbolic links
+            let toolMetricsFilePath = fs.realpathSync(path.join(scrubDirPath, toolEntry.metricsFile));
+            // Parse the metrics file
+            metricsCollection.push(metricParser.parseFile(toolMetricsFilePath));
         }
         // Verify we have exclusions set up properly
         if (buildSettings.globalExcludeFiles == undefined || buildSettings.onlyIncludeFiles == undefined) {
@@ -190,9 +197,8 @@ function parseBuild(buildName, state) {
     // Set the Collection to completed init
     errorCollection.setInitComplete();
     // Create the Build Object
-    // let buildScrubFolder = path.join(projectOptions.scrubFolder, buildName);
     let buildScrubFolder = projectOptions.scrubFolder;
-    let newBuildObject = new Build(buildName, buildSrcDir, buildScrubFolder, errorCollection, modules);
+    let newBuildObject = new Build(buildName, buildSrcDir, buildScrubFolder, errorCollection, metricsCollection, modules);
     return newBuildObject;
 }
 exports.parseBuild = parseBuild;

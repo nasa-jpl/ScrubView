@@ -23,7 +23,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.compareBuilds = exports.printSummary = exports.dispositionAll = exports.addComment = exports.routeEvent = exports.init = void 0;
+exports.compareBuilds = exports.loadMetrics = exports.printSummary = exports.dispositionAll = exports.addComment = exports.routeEvent = exports.init = void 0;
 let $ = require('jquery');
 const buildParser = __importStar(require("../types/buildParser"));
 const comments = __importStar(require("../types/commentObjects"));
@@ -113,6 +113,10 @@ function init(argsJSON) {
         return;
     }
     state.setSelectedBuild(newBuild);
+    // Load the metrics data
+    if (newBuild.metrics.length > 0) {
+        loadMetrics(newBuild.metrics);
+    }
     // Is the current registered? If not, show the registration dialog
     if (!userCollection.userIsRegistered(state.configuration.currentUser)) {
         registrationDialog_1.RegistrationDialog.show();
@@ -278,6 +282,17 @@ function printSummary() {
     }
 }
 exports.printSummary = printSummary;
+function loadMetrics(metricsData) {
+    // Print a status message
+    log_1.Log.debug(`Attempting to load ${metricsData.length} metrics items...`);
+    // $("#metrics-list").text("Successful Test")
+    $("#metrics-list").append("<tr><th>Tool</th><th>Number of Files</th><th>Number of Functions</th><th>Physical Lines</th><th>Lines of Code</th></tr>");
+    // Add all of the metrics numbers
+    metricsData.forEach((element) => {
+        $("#metrics-list").append(`<tr><td>${element.tool}</td><td>${element.numberOfFiles}</td><td>${element.numberOfFunctions}</td><td>${element.physicalLines}</td><td>${element.linesOfCode}</td></tr>`);
+    });
+}
+exports.loadMetrics = loadMetrics;
 function compareBuilds(previousBuildName, currentBuildName) {
     log_1.Log.debug(`Starting to Compare Build ${previousBuildName} to ${currentBuildName}`);
     if (state == null) {

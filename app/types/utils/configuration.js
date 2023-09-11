@@ -73,7 +73,7 @@ class Configuration {
             let projectName = path.basename(buildFolder);
             let scrubFolder = path.join(buildFolder, 'scrub_results');
             let projectLeads = [require("os").userInfo().username];
-            // Find all of the SARIF files
+            // Find all of the SARIF files and metrics files
             let sarifFiles = fs.readdirSync(scrubFolder).filter(fn => fn.endsWith('.sarif'));
             // Add all of the tool configuration data
             let toolConfigs = [];
@@ -81,11 +81,18 @@ class Configuration {
                 // Get the configuration values
                 let toolFile = path.basename(sarifFile);
                 let toolName = toolFile.split('.')[0];
+                // Add metrics data if it exists
+                let metricsFile = "";
+                let metricsPath = path.join(scrubFolder, toolName.concat("_metrics.csv"));
+                if (fs.existsSync(metricsPath)) {
+                    metricsFile = path.basename(metricsPath);
+                }
                 // Add the configuration data
                 toolConfigs.push({
                     "name": toolName,
                     "prefix": toolName,
                     "resultsFile": toolFile,
+                    "metricsFile": metricsFile,
                     "parser": "sarif",
                     "excludeFiles": [],
                     "excludeErrors": []

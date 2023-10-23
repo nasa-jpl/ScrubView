@@ -16,9 +16,17 @@ jobs:
     - name: build
       run: npm run build
 
-    - name: Upload Build Artifacts
+    - name: Upload Linux Artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: build-artifacts
-        path: ./builds
+        name: linux-build
+        path: ./builds/ScrubView-linux-x64.zip
+
+    - name: Upload MacOS Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: macos-build
+        path: ./builds/ScrubView-darwin-x64.zip
+
+    
 

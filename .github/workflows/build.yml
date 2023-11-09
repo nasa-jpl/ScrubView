@@ -31,7 +31,9 @@ jobs:
             })
       - name: Release
         uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          files: |
-            ./builds/ScrubView-linux-x64.zip
-            ./builds/ScrubView-darwin-x64.zip
+          name: Release v0.2
+          tag_name: v0.2
+          files: ./builds/ScrubView-*.zip

@@ -1,4 +1,4 @@
-name: Draft Release
+name: Create Release
 
 permissions:
   contents: read
@@ -22,22 +22,12 @@ jobs:
       - name: Set Release Tag
         run: |
           version_number=$(grep 'version' package.json | sed -r 's/\"version\": \"//g' | sed -r 's/",//g' | xargs)
-          echo 'SCRUBVIEW_VERSION="v${version_number}"' >> $GITHUB_ENV
-      - name: Create Release Tag
-        uses: actions/github-script@v5
-        with:
-          script: |
-            github.rest.git.createRef({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: 'refs/tags/${{ env.SCRUBVIEW_VERSION }}',
-              sha: context.sha
-            })
+          echo "SCRUBVIEW_VERSION=v${version_number}" >> $GITHUB_ENV
       - name: Release
         uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: Release $SCRUBVIEW_VERSION
-          tag_name: $SCRUBVIEW_VERSION
+          name: Release ${{ env.SCRUBVIEW_VERSION }}
+          tag_name: ${{ env.SCRUBVIEW_VERSION }}
           files: ./builds/ScrubView-*.zip

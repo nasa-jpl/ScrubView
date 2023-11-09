@@ -6,12 +6,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Build Packages
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@master
         with:
-            node-version: 14
-      - name: install dependencies
+              node-version: 14
+      - name: Install Dependencies
         run: npm install
       - name: build
         run: npm run build

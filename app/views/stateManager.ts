@@ -4,7 +4,7 @@ import { Build } from "../types/buildParser";
 import { UserCollection } from "../types/userCollection";
 import { Log } from "../types/utils/log"
 import { AbstractReviewItem } from "../types/abstractReviewItem";
-// import { CodeMetrics } from "../types/codeMetrics";
+import { CodeMetrics } from "../types/codeMetrics";
 
 export enum DisplayMode {
     Disposition,
@@ -22,6 +22,7 @@ export class StateManager extends EventEmitter
     private _buildList : Array<BuildInfo> | null;
     private _users : UserCollection | null;
     private _displayMode : DisplayMode;
+    private _metricsList : Array<CodeMetrics> | null;
 
     private _selectedBuild : Build | null;
     private _selectedModule : string | null;
@@ -31,6 +32,7 @@ export class StateManager extends EventEmitter
     
     get configuration() : Configuration | null {return this._configuration;}
     get buildList() : Array<BuildInfo> | null {return this._buildList; }
+    get metricsList() : Array<CodeMetrics> | null {return this._metricsList; }
     get users() : UserCollection | null { return this._users; }
     get displayMode() : DisplayMode { return this._displayMode; }
 
@@ -52,6 +54,7 @@ export class StateManager extends EventEmitter
         this._selectedError = null;
         this._selectedPathIndex = null;
         this._currentBrowserPath = null;
+        this._metricsList = null;
 
         // Each Error tile will listen for the onErrorClicked event, so
         // this needs to be sized for the maximum number of errors a module
@@ -72,10 +75,11 @@ export class StateManager extends EventEmitter
         this.emit("onBuildListChanged", this._buildList);
     }
 
-    // public setMetricsTable(metricsList : Array<CodeMetrics>)
-    // {
-    //     this.emit("onMetricsRequested", metricsList)
-    // }
+    public setMetricsTable(metricsList : Array<CodeMetrics>)
+    {
+        this._metricsList = metricsList;
+        // this.emit("onMetricsRequested", this._metricsList)
+    }
 
     public setUserCollection(userCollection : UserCollection)
     {

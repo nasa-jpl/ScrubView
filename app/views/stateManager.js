@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.StateManager = exports.DisplayMode = void 0;
 const events_1 = require("events");
 const log_1 = require("../types/utils/log");
-// import { CodeMetrics } from "../types/codeMetrics";
 var DisplayMode;
 (function (DisplayMode) {
     DisplayMode[DisplayMode["Disposition"] = 0] = "Disposition";
@@ -26,6 +25,7 @@ class StateManager extends events_1.EventEmitter {
         this._selectedError = null;
         this._selectedPathIndex = null;
         this._currentBrowserPath = null;
+        this._metricsList = null;
         // Each Error tile will listen for the onErrorClicked event, so
         // this needs to be sized for the maximum number of errors a module
         // could conceivably have. 
@@ -33,6 +33,7 @@ class StateManager extends events_1.EventEmitter {
     }
     get configuration() { return this._configuration; }
     get buildList() { return this._buildList; }
+    get metricsList() { return this._metricsList; }
     get users() { return this._users; }
     get displayMode() { return this._displayMode; }
     get selectedBuild() { return this._selectedBuild; }
@@ -49,10 +50,10 @@ class StateManager extends events_1.EventEmitter {
         log_1.Log.debug("Build List Changed");
         this.emit("onBuildListChanged", this._buildList);
     }
-    // public setMetricsTable(metricsList : Array<CodeMetrics>)
-    // {
-    //     this.emit("onMetricsRequested", metricsList)
-    // }
+    setMetricsTable(metricsList) {
+        this._metricsList = metricsList;
+        // this.emit("onMetricsRequested", this._metricsList)
+    }
     setUserCollection(userCollection) {
         this._users = userCollection;
     }

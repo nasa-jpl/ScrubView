@@ -43,6 +43,12 @@
             view.openNewBuild();
         });
 
+        // Load metrics data
+        electron.ipcRenderer.on("loadMetrics", (event, message) => {
+            console.debug(`Received IPC Message: loadMetrics ${message}`);
+            view.loadMetrics();
+        });
+
         // Console Support - Disposition All 
         function dispositionAll(module, errorType, file, line, disposition, comment, overwriteExisting)
         {
@@ -78,51 +84,37 @@
     </script>
 
     <!-- Main Nav -->
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark no-select" id="nav-parent">
-        <a class="navbar-brand" href="#"><span id="menu-project-name"></span> ScrubView <span id="menu-version" style="font-size: 0.5em">###</span></a>
 
-        <table id="metrics-list" style="font-size: 0.7em" align="right">
-            <style>
-                table, td, th {
-                    border: 1px solid white;
-                    text-align: center;
-                }
-            </style>
-
-        </table>
-
-        <div class="collapse navbar-collapse" id="navbarSupportedContent" style="align-items: center">
-            <!-- <ul class="navbar-nav mr-auto justify-content-left"> -->
-
-               
-
-                <!-- Build Dropdown -->
-                <!--<div><BuildList/></div> -->
-                
-
-                <!-- Module Dropdown -->
-                <!--<div><ModuleList/></div> -->
-
-            <!-- </ul> -->
-
-
-        </div>
-    </nav>
 
     <div style="font-size: 12px; color: var(--color-text-primary); display: inline; margin-left: 12px;" >
             <B>PROJECT DIRECTORY: <span id="project-directory"></span></B> 
     </div>
 
-    <div class="container-fluid m-0 p-0" style="height: calc(100vh - 100px);">
+    <div class="container-fluid m-0 p-0" style="height: calc(100vh - 42px);">
         <div class="row no-gutters h-100">
 
             <!-------------------------------->
             <!-- File Browser Column--------->
             <!-------------------------------->
             <div class="section h-100" id="col-error-list" style="display: flex;overflow: auto;resize: horizontal;width: 25%;">
-                <div class="row no-gutters h-100">
+                <div class="row no-gutters h-75">
                     <div class="section-header" id="file-list-header">FILE LIST<span id="relative-directory"></span></div>
                     <FolderBrowser/>
+                </div>
+                <div class="row no-gutters h-25">
+                    <div class="section-header" id="metrics-list-header">DIRECTORY METRICS</div>
+                        <table id="metrics-list" style="font-size: 0.7em" align="right">
+                        <style>
+                            table, td, th {
+                                border: 1px solid white;
+                                text-align: center;
+                                margin-left: auto;
+                                margin-right: auto;
+                                margin-top: auto;
+                                margin-bottom: auto;
+                            }
+                        </style>
+                        </table>
                 </div>
             </div>
 

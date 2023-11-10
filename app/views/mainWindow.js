@@ -35,7 +35,6 @@ const stateManager_1 = require("./stateManager");
 const stateManager_2 = require("./stateManager");
 const fileBrowser_1 = require("./components/fileBrowser");
 const folderBrowser_1 = require("./components/folderBrowser");
-const moduleList_1 = require("./components/moduleList");
 const log_1 = require("../types/utils/log");
 const errorList_1 = require("./components/errorList");
 const commentList_1 = require("./components/commentList");
@@ -70,7 +69,7 @@ function init(argsJSON) {
     if (state.configuration == null)
         return;
     // Init the baseline Components
-    components.push(new moduleList_1.ModuleListComponent(state));
+    // components.push(new ModuleListComponent(state));
     components.push(new fileBrowser_1.FileBrowserComponent(state));
     components.push(new folderBrowser_1.FolderBrowserComponent(state));
     components.push(new commentList_1.CommentList(state));
@@ -115,7 +114,9 @@ function init(argsJSON) {
     state.setSelectedBuild(newBuild);
     // Load the metrics data
     if (newBuild.metrics.length > 0) {
-        loadMetrics(newBuild.metrics);
+        // loadMetrics(newBuild.metrics);
+        state.setMetricsTable(newBuild.metrics);
+        loadMetrics(newBuild.codePath);
     }
     // Is the current registered? If not, show the registration dialog
     if (!userCollection.userIsRegistered(state.configuration.currentUser)) {
@@ -282,15 +283,55 @@ function printSummary() {
     }
 }
 exports.printSummary = printSummary;
-function loadMetrics(metricsData) {
+function loadMetrics(currentDirectory) {
+    if (state.metricsList == null) {
+        return;
+    }
+    let metricsData = state.metricsList;
     // Print a status message
     log_1.Log.debug(`Attempting to load ${metricsData.length} metrics items...`);
-    // $("#metrics-list").text("Successful Test")
-    $("#metrics-list").append("<tr><th>Tool</th><th>Number of Files</th><th>Number of Functions</th><th>Physical Lines</th><th>Lines of Code</th></tr>");
-    // Add all of the metrics numbers
+    // Add the header data
+    let headerData = '<tr><th>Metric</th>';
     metricsData.forEach((element) => {
-        $("#metrics-list").append(`<tr><td>${element.tool}</td><td>${element.numberOfFiles}</td><td>${element.numberOfFunctions}</td><td>${element.physicalLines}</td><td>${element.linesOfCode}</td></tr>`);
+        headerData = headerData.concat(`<th>${element.tool}</th>`);
     });
+    $("#metrics-list").append(headerData.concat('</tr>'));
+    // Add the files data
+    let fileData = '<tr><td>Files</td>';
+    metricsData.forEach((element) => {
+        fileData = fileData.concat(`<td>${element.numberOfFiles}</td>`);
+    });
+    $("#metrics-list").append(fileData.concat('</tr>'));
+    // Add the functions data
+    let functionData = '<tr><td>Functions</td>';
+    metricsData.forEach((element) => {
+        functionData = functionData.concat(`<td>${element.numberOfFunctions}</td>`);
+    });
+    $("#metrics-list").append(functionData.concat('</tr>'));
+    // Add the physical lines data
+    let physicalLinesData = '<tr><td>Physical Lines</td>';
+    metricsData.forEach((element) => {
+        physicalLinesData = physicalLinesData.concat(`<td>${element.physicalLines}</td>`);
+    });
+    $("#metrics-list").append(physicalLinesData.concat('</tr>'));
+    // Add the code lines data
+    let codeLinesData = '<tr><td>Code Lines</td>';
+    metricsData.forEach((element) => {
+        codeLinesData = codeLinesData.concat(`<td>${element.linesOfCode}</td>`);
+    });
+    $("#metrics-list").append(codeLinesData.concat('</tr>'));
+    // Add the comment lines data
+    let commentsData = '<tr><td>Comments</td>';
+    metricsData.forEach((element) => {
+        commentsData = commentsData.concat(`<td>${element.linesOfCode}</td>`);
+    });
+    $("#metrics-list").append(commentsData.concat('</tr>'));
+    // // Add the header data
+    // $("#metrics-list").append("<tr><th>Tool</th><th>Number of Files</th><th>Number of Functions</th><th>Physical Lines</th><th>Lines of Code</th></tr>")
+    // // Add all of the metrics numbers
+    // metricsData.forEach( (element) => {
+    //     $("#metrics-list").append(`<tr><td>${element.tool}</td><td>${element.numberOfFiles}</td><td>${element.numberOfFunctions}</td><td>${element.physicalLines}</td><td>${element.linesOfCode}</td></tr>`)
+    // })
 }
 exports.loadMetrics = loadMetrics;
 function compareBuilds(previousBuildName, currentBuildName) {

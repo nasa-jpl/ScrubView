@@ -1,7 +1,7 @@
 import {AbstractComponent} from "./abstractComponent"
 import {StateManager, DisplayMode} from "../stateManager";
 
-export class MetricsListComponent extends AbstractComponent
+export class MetricsList extends AbstractComponent
 {
     constructor(state : StateManager)
     {
@@ -12,7 +12,7 @@ export class MetricsListComponent extends AbstractComponent
         // });
 
         // Subscribe to the onBuildListsUpdated event
-        this.eventSubscribe("onMetricsRequested", (metricsList)=>{
+        this.eventSubscribe("onMetricsRequested", ()=>{
             this.render();
         });
 
@@ -46,26 +46,26 @@ export class MetricsListComponent extends AbstractComponent
         //     $("#menu-build-parent").text(this._state.selectedBuild.name);
         // }
 
-        if(this._state.buildList == null) {
-            return;
-        }
+        // if(this._state.metricsList == null) {
+        //     return;
+        // }
 
         // Find the build List Items DOM object
         let metricsListItemsParent = $("#metrics-list");
         metricsListItemsParent.empty();
         metricsListItemsParent.append("Successful append");
 
-        // Set the List
-        for(let buildInfo of this._state.buildList)
-        {
-            let badgeText = "";
-            if(buildInfo.badgeText != undefined)
-            {
-                let badgeType = buildInfo.badgeType == undefined ? "info" : buildInfo.badgeType;
-                badgeText = `<span class="badge badge-${badgeType}">${buildInfo.badgeText}</span>`
-            }
+        // // Set the List
+        // for(let buildInfo of this._state.buildList)
+        // {
+        //     let badgeText = "";
+        //     if(buildInfo.badgeText != undefined)
+        //     {
+        //         let badgeType = buildInfo.badgeType == undefined ? "info" : buildInfo.badgeType;
+        //         badgeText = `<span class="badge badge-${badgeType}">${buildInfo.badgeText}</span>`
+        //     }
 
-            // buildListItemsParent.append(`<a class="menu-item" onclick="view.routeEvent('onBuildClicked', '${buildInfo.name}')">${buildInfo.name} ${badgeText}</a>`);
-        }
+        //     // buildListItemsParent.append(`<a class="menu-item" onclick="view.routeEvent('onBuildClicked', '${buildInfo.name}')">${buildInfo.name} ${badgeText}</a>`);
+        // }
     }
 }

@@ -1,0 +1,33 @@
+name: Create Release
+
+permissions:
+  contents: read
+
+on: push
+
+jobs:
+  build:
+    permissions:
+            contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@master
+        with:
+              node-version: 14
+      - name: Install Dependencies
+        run: npm install
+      - name: build
+        run: npm run build
+      - name: Set Release Tag
+        run: |
+          version_number=$(grep 'version' package.json | sed -r 's/\"version\": \"//g' | sed -r 's/",//g' | xargs)
+          echo "SCRUBVIEW_VERSION=v${version_number}" >> $GITHUB_ENV
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          name: Release ${{ env.SCRUBVIEW_VERSION }}
+          tag_name: ${{ env.SCRUBVIEW_VERSION }}
+          files: ./builds/ScrubView-*.zip

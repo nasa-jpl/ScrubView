@@ -106,13 +106,13 @@
             <!-------------------------------->
             <!-- Code Browser Column        -->
             <!-------------------------------->
-            <div class="section h-100" id="col-file-browser" style="width: 75%;display: flex;overflow: auto;flex: auto;flex: 1 1 0%"> 
-                <div class="row no-gutters ">
+            <div class="section h-100" id="col-file-browser" style="width: 75%;flex: auto;flex: 1 1 0%"> 
+                <div class="row no-gutters">
                     <div class="section-header" id="code-header">CODE BROWSER<span id="code-filename" style="font-weight:900;"></span></div>
                     <div class="section-body"><FileBrowser/></div>
                 </div>
 
-                <div class="row no-gutters">
+                <div class="row no-gutters" style="overflow: auto;">
                     <div class="section-header" id="error-header">ERROR LIST</div>
                     <ErrorList/>
                 </div>

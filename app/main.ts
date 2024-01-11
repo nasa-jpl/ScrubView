@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-import { app, BrowserWindow, Menu } from "electron";
+import { app, BrowserWindow, ipcMain, Menu } from "electron";
 import { CommandLineArgs } from "./types/utils/commandLineArgs";
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -10,6 +10,7 @@ let metricsWindow: any;
 
 // Get the Command Line Arguments
 let args = CommandLineArgs.parse();
+let menu : null | Menu = null;
 
 function createWindow() {
 
@@ -47,7 +48,6 @@ function createWindow() {
     })
 
     // Setup the Main Menu
-    let menu : null | Menu = null;
     if (args.disposition) {
         menu = Menu.buildFromTemplate([
             {
@@ -109,6 +109,10 @@ function createWindow() {
                 submenu:
                     [
                         {label: 'Load new project...', click() { openNewBuild() } },
+                        {label: 'Display metrics', 
+                                id: 'metrics-popup',
+                                enabled: false,
+                                click() { openMetricsWindow() }},
                         { role : "about"},
                         { label: 'Quit', click() { app.quit() } }
                     ]
@@ -144,6 +148,7 @@ function createWindow() {
             }
         ]);
     }
+
 
     //
     Menu.setApplicationMenu(menu);
@@ -208,6 +213,36 @@ function openCompareWindow()
         compareWindow = null;
     });
 
+}
+
+ipcMain.on('metricsDataReady', (event, arg) => {
+    // console.log(arg);
+    const { dialog } = require('electron')
+    dialog.showMessageBox(mainWindow, {type: "info", message: arg})
+});
+
+
+ipcMain.on('metricsDataStatus', (event, arg) => {
+    // console.log(arg);
+    if(menu == null)
+    {
+        return;
+    }
+
+    let metricsMenuItem = menu.getMenuItemById('metrics-popup');
+
+    if(metricsMenuItem == null)
+    {
+        return;
+    }
+
+    metricsMenuItem.enabled = arg;
+
+});
+
+function openMetricsWindow() 
+{
+    mainWindow.send("loadMetrics");
 }
 
 // This method will be called when Electron has finished

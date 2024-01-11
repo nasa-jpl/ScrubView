@@ -11,6 +11,7 @@ let compareWindow;
 let metricsWindow;
 // Get the Command Line Arguments
 let args = commandLineArgs_1.CommandLineArgs.parse();
+let menu = null;
 function createWindow() {
     require('@electron/remote/main').initialize();
     // Create the browser window.
@@ -40,7 +41,6 @@ function createWindow() {
         mainWindow = null;
     });
     // Setup the Main Menu
-    let menu = null;
     if (args.disposition) {
         menu = electron_1.Menu.buildFromTemplate([
             {
@@ -97,6 +97,10 @@ function createWindow() {
                 label: "ScrubView",
                 submenu: [
                     { label: 'Load new project...', click() { openNewBuild(); } },
+                    { label: 'Display metrics',
+                        id: 'metrics-popup',
+                        enabled: false,
+                        click() { openMetricsWindow(); } },
                     { role: "about" },
                     { label: 'Quit', click() { electron_1.app.quit(); } }
                 ]
@@ -179,6 +183,25 @@ function openCompareWindow() {
     compareWindow.on('closed', function () {
         compareWindow = null;
     });
+}
+electron_1.ipcMain.on('metricsDataReady', (event, arg) => {
+    // console.log(arg);
+    const { dialog } = require('electron');
+    dialog.showMessageBox(mainWindow, { type: "info", message: arg });
+});
+electron_1.ipcMain.on('metricsDataStatus', (event, arg) => {
+    // console.log(arg);
+    if (menu == null) {
+        return;
+    }
+    let metricsMenuItem = menu.getMenuItemById('metrics-popup');
+    if (metricsMenuItem == null) {
+        return;
+    }
+    metricsMenuItem.enabled = arg;
+});
+function openMetricsWindow() {
+    mainWindow.send("loadMetrics");
 }
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

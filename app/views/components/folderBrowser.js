@@ -29,6 +29,9 @@ const path = __importStar(require("path"));
 const abstractComponent_1 = require("./abstractComponent");
 const log_1 = require("../../types/utils/log");
 const loadingModalDialog_1 = require("./loadingModalDialog");
+// import { glob, globSync } from 'glob'
+// import { CodeMetrics } from "../../types/codeMetrics";
+// import { FileMetrics } from "../../types/codeMetrics";
 let $ = require('jquery');
 let paddingLength = 30;
 class FolderBrowserComponent extends abstractComponent_1.AbstractComponent {
@@ -88,7 +91,8 @@ class FolderBrowserComponent extends abstractComponent_1.AbstractComponent {
         ];
         // Add the Parent Folder
         $("#file-list").empty();
-        this.addFolderToParent($("#file-list"), modulePath, ignoreList, false);
+        // this.addFolderToParent($("#file-list"), modulePath, ignoreList, false);
+        let metricsFiles = this.addFolderToParent($("#file-list"), modulePath, ignoreList, false);
         // Hide the loading screen
         loadingModalDialog_1.LoadingModalDialog.hide();
     }
@@ -99,24 +103,24 @@ class FolderBrowserComponent extends abstractComponent_1.AbstractComponent {
         folderItems = folderItems.sort();
         let fileList = [];
         let folderList = [];
-        for (let file of folderItems) {
+        for (let folderItem of folderItems) {
             // Filter Ignored Files
             let skipFile = false;
             for (let ignoreFilter of ignoreList) {
-                if (file.includes(ignoreFilter)) {
+                if (folderItem.includes(ignoreFilter)) {
                     skipFile = true;
                     break;
                 }
             }
-            if (skipFile || file.startsWith(".")) {
+            if (skipFile || folderItem.startsWith(".")) {
                 continue;
             }
-            let fullPath = path.join(folderPath, file);
+            let fullPath = path.join(folderPath, folderItem);
             if (fs.lstatSync(fullPath).isDirectory()) {
-                folderList.push(file);
+                folderList.push(folderItem);
             }
             else {
-                fileList.push(file);
+                fileList.push(folderItem);
             }
         }
         // Add a diretory up navigation option, if applicable
@@ -159,6 +163,8 @@ class FolderBrowserComponent extends abstractComponent_1.AbstractComponent {
         }
         parentElement.append(folderListElement);
         loadingModalDialog_1.LoadingModalDialog.updateProgress(100);
+        // Udpate the metrics
+        // let directoryMetrics = this.updateMetrics(folderPath, ignoreList);
     }
     getImagePath(filePath) {
         // Icons from here:

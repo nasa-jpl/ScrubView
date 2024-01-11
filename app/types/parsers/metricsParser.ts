@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { Log } from "../utils/log"
+// import { Log } from "../utils/log"
 import { CodeMetrics, FileMetrics } from '../codeMetrics';
 
 export class MetricsParser
@@ -21,21 +21,27 @@ export class MetricsParser
         // Parse the project metrics
         let pathSplit = filePath.split('/');
         let toolName = pathSplit[pathSplit.length - 1].replace('_metrics.csv', '');
-        let lineSplit = lines[1].split(',');
-        let numberOfFiles = lineSplit[2];
-        let numberOfFunctions = lineSplit[3];
-        let physicalLines = lineSplit[4];
-        let linesOfCode = lineSplit[5];
 
         // Parse the file metrics, if they exist
         let fileMetrics = new Array;
+        let projectNumberOfFiles = 0;
+        let projectNumberofFunctions = 0;
+        let projectPhysicalLines = 0;
+        let projectLinesOfCode = 0;
+        let projectCyclomaticComplexity = 0;
+
         for(let i = 2; i < lines.length; i++){
             let rawFileData = lines[i];
-            lineSplit = rawFileData.split(',');
-            fileMetrics.push(new FileMetrics(lineSplit[0], lineSplit[1], lineSplit[3], lineSplit[4], lineSplit[5]))
+            let lineSplit = rawFileData.split(',');
+            let fileNumberOfFunctions = Number(lineSplit[3]);
+            let filePhyscialLines = Number(lineSplit[4]);
+            let fileLinesOfCode = Number(lineSplit[5]);
+            let fileCyclomaticComplexity = Number(lineSplit[7]);
+
+            fileMetrics.push(new FileMetrics(lineSplit[0], lineSplit[1], fileNumberOfFunctions, filePhyscialLines, fileLinesOfCode, fileCyclomaticComplexity))
         }
 
-        return new CodeMetrics(toolName, numberOfFiles, numberOfFunctions, physicalLines, linesOfCode);
+        return new CodeMetrics(toolName, projectNumberOfFiles, projectNumberofFunctions, projectPhysicalLines, projectLinesOfCode, projectCyclomaticComplexity, fileMetrics);
 
     }
 }

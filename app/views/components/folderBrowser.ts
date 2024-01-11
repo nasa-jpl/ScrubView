@@ -6,9 +6,13 @@ import { Log } from "../../types/utils/log";
 import { LoadingModalDialog } from './loadingModalDialog';
 import * as view from "../mainWindow"
 import { dialog } from "electron";
+// import { glob, globSync } from 'glob'
+// import { CodeMetrics } from "../../types/codeMetrics";
+// import { FileMetrics } from "../../types/codeMetrics";
 let $ = require('jquery');
 
 let paddingLength = 30;
+
 
 export class FolderBrowserComponent extends AbstractComponent
 {
@@ -87,7 +91,9 @@ export class FolderBrowserComponent extends AbstractComponent
 
         // Add the Parent Folder
         $("#file-list").empty();
-        this.addFolderToParent($("#file-list"), modulePath, ignoreList, false);
+        // this.addFolderToParent($("#file-list"), modulePath, ignoreList, false);
+        let metricsFiles = this.addFolderToParent($("#file-list"), modulePath, ignoreList, false);
+
 
         // Hide the loading screen
         LoadingModalDialog.hide();        
@@ -102,29 +108,29 @@ export class FolderBrowserComponent extends AbstractComponent
         let fileList : string[] = [];
         let folderList : string[] = [];
 
-        for(let file of folderItems)
+        for(let folderItem of folderItems)
         {
             // Filter Ignored Files
             let skipFile = false;
             for (let ignoreFilter of ignoreList) {
-                if(file.includes(ignoreFilter)) {
+                if(folderItem.includes(ignoreFilter)) {
                     skipFile = true;
                     break;
                 }
             }
 
-            if(skipFile || file.startsWith(".")) {
+            if(skipFile || folderItem.startsWith(".")) {
                 continue;
             }
 
-            let fullPath = path.join(folderPath, file);
+            let fullPath = path.join(folderPath, folderItem);
             if(fs.lstatSync(fullPath).isDirectory())
             {
-                folderList.push(file);
+                folderList.push(folderItem);
             }
             else
             {
-                fileList.push(file)
+                fileList.push(folderItem)
             }
         }
 
@@ -182,6 +188,9 @@ export class FolderBrowserComponent extends AbstractComponent
 
         LoadingModalDialog.updateProgress(100);
 
+        // Udpate the metrics
+        // let directoryMetrics = this.updateMetrics(folderPath, ignoreList);
+
     }
 
     private getImagePath(filePath : string) : string 
@@ -204,5 +213,75 @@ export class FolderBrowserComponent extends AbstractComponent
 
         return path.join("img", iconName);
     }
+
+    // private updateMetrics(folderPath : string, ignoreList : string[])
+    // {
+    //     let metricsFileList = [];
+
+    //     if(this._state.metricsList == null)
+    //     {
+    //         return;
+    //     }
+
+    //     if(this._state.selectedBuild == null)
+    //     {
+    //         return;
+    //     }
+
+    //     // Filter Ignored Files
+    //     for(let filePath of globSync(folderPath + '/**/*'))
+    //     {
+    //         let skip = false;
+    //         for(let ignoreFilter of ignoreList) {
+    //             if(filePath.includes(ignoreFilter)) {
+    //                 skip = true;
+    //                 break;
+    //             }
+    //         }
+
+    //         if(!skip)
+    //         {
+    //             metricsFileList.push(path.relative(this._state.selectedBuild.codePath, filePath));
+    //         }
+    //     }
+
+    //     let scopeMetrics = new Array;
+    //     for(let toolMetrics of this._state.metricsList)
+    //     {
+    //         let scopeFileMetrics = new Array;
+    //         let toolNumberofFiles = 0;
+    //         let toolLinesOfCode = 0.0;
+    //         let toolNumberOfFunctions = 0.0;
+    //         let toolPhysicalLines = 0.0;
+    //         let toolCyclomaticComplexity = 0.0;
+
+    //         for(let relativePath of metricsFileList)
+    //         {
+    //             if(toolMetrics.fileMetrics.filter(x => x.file == relativePath).length)
+    //             {
+    //                 let metricValue = toolMetrics.fileMetrics.find(x => x.file == relativePath);
+    //                 scopeFileMetrics.push(metricValue);
+
+    //                 if(metricValue == null)
+    //                 {
+    //                     break;
+    //                 }
+
+    //                 toolNumberofFiles = toolNumberofFiles + 1;
+    //                 toolLinesOfCode = toolLinesOfCode + metricValue.linesOfCode;
+    //                 toolNumberOfFunctions = toolNumberOfFunctions + metricValue.numberOfFunctions;
+    //                 toolPhysicalLines = toolPhysicalLines + metricValue.physicalLines;
+    //                 toolCyclomaticComplexity = toolCyclomaticComplexity + metricValue.cyclomaticComplexity;
+
+    //             }
+
+    //         }
+
+    //         scopeMetrics.push(new CodeMetrics(toolMetrics.tool, toolNumberofFiles, toolNumberOfFunctions, toolPhysicalLines, toolLinesOfCode, toolCyclomaticComplexity, scopeFileMetrics));
+
+    //     }
+
+    //     return scopeMetrics;
+    // }
 
 }

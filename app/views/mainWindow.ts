@@ -31,6 +31,9 @@ import { CodeCommentModal } from './components/codeCommentModal';
 import { CodeError } from '../types/codeError';
 import { CodeMetrics } from '../types/codeMetrics';
 import { CodeComment } from '../types/codeComment';
+// import { MetricsListComponent } from './components/metricsList';
+import { BrowserWindow, ipcRenderer } from 'electron';
+import { glob, globSync } from 'glob'
 
 // State
 let state = new StateManager();
@@ -70,6 +73,7 @@ export function init(argsJSON : string)
     components.push(new ChoiceModalDialog(state));
     components.push(new LogMessageViewer(state));
     components.push(new CodeCommentModal(state));
+    // components.push(new MetricsListComponent(state));
 
     // Init components relevant to disposition
     if(args.disposition) {
@@ -116,13 +120,13 @@ export function init(argsJSON : string)
 
     // Load the metrics data
     if (newBuild.metrics.length > 0) {
-        // loadMetrics(newBuild.metrics);
-        state.setMetricsTable(newBuild.metrics)
-        loadMetrics(newBuild.codePath);
+        state.setMetricsTable(newBuild.metrics);
+        ipcRenderer.send("metricsDataStatus", true);
     }
-
-
-
+    else
+    {
+        ipcRenderer.send("metricsDataStatus", false);
+    }
 
     // Is the current registered? If not, show the registration dialog
     if(!userCollection.userIsRegistered(state.configuration.currentUser))
@@ -170,126 +174,137 @@ function loadBuild()
     LoadingModalDialog.hide();
 }
 
-//------------------------------------------------------------------------------
-// Called by the IPC handlers from the main process
-export function addComment(commentString : string)
+export function updateMetrics()
 {
-    if(state.selectedError == null) {
-        return;
-    }
-
-    if(state.displayMode == DisplayMode.Disposition)
+    if(state.metricsList == null )
     {
-        // Otherwise, this is a new dev disposition (which may also have a 
-        // text comment)
-        let disposition;
-        switch(commentString)
-        {
-            case "Agree": disposition = comments.DeveloperDispositions.Agree; break;
-            case "Disagree": disposition = comments.DeveloperDispositions.Disagree; break;
-            case "Discuss": disposition = comments.DeveloperDispositions.Discuss; break;
-            default: return; // Invalid - Don't Add the Disposition
-        }
 
-        let newComment = new comments.DevDispositionComment(disposition);
-        state.selectedError.addComment(newComment);
-        state.emit("onCommentAdded");
-        state.emit("onDispositionAdded");
-    }
-    else
-    {
-            // Otherwise, this is a new dev disposition (which may also have a 
-            // text comment)
-            let disposition;
-            switch(commentString)
-            {
-                case "No Action": disposition = comments.LeadDispositions.No_Action; break;
-                case "Code Fix Requested": disposition = comments.LeadDispositions.Code_Fix_Requested; break;
-                default: return; // Invalid - Don't Add the Disposition
-            }
-
-            let newComment = new comments.LeadDispositionComment(disposition);
-            state.selectedError.addComment(newComment);
-            state.emit("onCommentAdded");
-            state.emit("onDispositionAdded");
     }
 
-    // Move to the next error
-    if(errorList != null) {
-        errorList.selectNextError();
-    }
+
+    return "";
 }
 
-export function dispositionAll(module:string, errorType:string, file:string, line:number, dispositionString:string, comment : string, overwriteExisting:boolean)
-{
-    if(state == null || state.selectedBuild == null)
-        return;
+// //------------------------------------------------------------------------------
+// // Called by the IPC handlers from the main process
+// export function addComment(commentString : string)
+// {
+//     if(state.selectedError == null) {
+//         return;
+//     }
 
-    Log.warning(`Dispositioning all issues in module ${module} ${file}:${line} with disposition: ${dispositionString}`);
+//     if(state.displayMode == DisplayMode.Disposition)
+//     {
+//         // Otherwise, this is a new dev disposition (which may also have a 
+//         // text comment)
+//         let disposition;
+//         switch(commentString)
+//         {
+//             case "Agree": disposition = comments.DeveloperDispositions.Agree; break;
+//             case "Disagree": disposition = comments.DeveloperDispositions.Disagree; break;
+//             case "Discuss": disposition = comments.DeveloperDispositions.Discuss; break;
+//             default: return; // Invalid - Don't Add the Disposition
+//         }
 
-    // Get all errors for the module
-    let errorList = state.selectedBuild.errors.getModuleReviewItemList(module);
+//         let newComment = new comments.DevDispositionComment(disposition);
+//         state.selectedError.addComment(newComment);
+//         state.emit("onCommentAdded");
+//         state.emit("onDispositionAdded");
+//     }
+//     else
+//     {
+//             // Otherwise, this is a new dev disposition (which may also have a 
+//             // text comment)
+//             let disposition;
+//             switch(commentString)
+//             {
+//                 case "No Action": disposition = comments.LeadDispositions.No_Action; break;
+//                 case "Code Fix Requested": disposition = comments.LeadDispositions.Code_Fix_Requested; break;
+//                 default: return; // Invalid - Don't Add the Disposition
+//             }
 
-    for(let error of errorList)
-    {
+//             let newComment = new comments.LeadDispositionComment(disposition);
+//             state.selectedError.addComment(newComment);
+//             state.emit("onCommentAdded");
+//             state.emit("onDispositionAdded");
+//     }
 
-        let errorMatches = true;
+//     // Move to the next error
+//     if(errorList != null) {
+//         errorList.selectNextError();
+//     }
+// }
 
-        // Error Type matches or is "*"
-        // Note this is the error type as displayed on the screen
-        if(errorType != "*" && error instanceof CodeError)
-            errorMatches = errorMatches && (error.formatErrorTypeForScreen().toUpperCase() == errorType.toUpperCase())
+// export function dispositionAll(module:string, errorType:string, file:string, line:number, dispositionString:string, comment : string, overwriteExisting:boolean)
+// {
+//     if(state == null || state.selectedBuild == null)
+//         return;
 
-        // File name matches? Or Filename is "*"
-        if(file != "*")
-            errorMatches = errorMatches && (error.fileName.toUpperCase() == file.toUpperCase());
+//     Log.warning(`Dispositioning all issues in module ${module} ${file}:${line} with disposition: ${dispositionString}`);
 
-        // Line number matches or line number is -1
-        if(line != -1)
-            errorMatches = errorMatches && (error.lineNumber == line);
+//     // Get all errors for the module
+//     let errorList = state.selectedBuild.errors.getModuleReviewItemList(module);
 
-        // Does this error match the file & line? If not, move on
-        if(!errorMatches)
-            continue;
+//     for(let error of errorList)
+//     {
 
-        // Match, add the disposition
-        let dispositionComment;
-        let hasExistingDisposition;
-        if(state.displayMode == DisplayMode.Disposition)
-        {
-            let disposition = comments.DeveloperDispositions[dispositionString as keyof typeof comments.DeveloperDispositions];
+//         let errorMatches = true;
 
-            if(disposition == undefined){
-                Log.error(`Disposition ${dispositionString} was not found. Unable to disposition.`);
-                return;
-            }
+//         // Error Type matches or is "*"
+//         // Note this is the error type as displayed on the screen
+//         if(errorType != "*" && error instanceof CodeError)
+//             errorMatches = errorMatches && (error.formatErrorTypeForScreen().toUpperCase() == errorType.toUpperCase())
 
-            dispositionComment = new comments.DevDispositionComment(disposition, comment);
-            hasExistingDisposition = error.hasDeveloperDisposition;
-        }
-        else 
-        {
-            let disposition = comments.LeadDispositions[dispositionString as keyof typeof comments.LeadDispositions];
-            if(disposition == undefined){
-                Log.error(`Disposition ${dispositionString} was not found. Unable to disposition.`);
-                return;
-            }
+//         // File name matches? Or Filename is "*"
+//         if(file != "*")
+//             errorMatches = errorMatches && (error.fileName.toUpperCase() == file.toUpperCase());
 
-            dispositionComment = new comments.LeadDispositionComment(disposition, comment);
-            hasExistingDisposition = error.hasLeadDisposition;
-        }
+//         // Line number matches or line number is -1
+//         if(line != -1)
+//             errorMatches = errorMatches && (error.lineNumber == line);
 
-        // Does this error have an existing disposition?
-        if(hasExistingDisposition && !overwriteExisting) {
-            Log.message(`Skipping ${error.hash} which has an existing disposition.`);
-            continue;
-        }
+//         // Does this error match the file & line? If not, move on
+//         if(!errorMatches)
+//             continue;
+
+//         // Match, add the disposition
+//         let dispositionComment;
+//         let hasExistingDisposition;
+//         if(state.displayMode == DisplayMode.Disposition)
+//         {
+//             let disposition = comments.DeveloperDispositions[dispositionString as keyof typeof comments.DeveloperDispositions];
+
+//             if(disposition == undefined){
+//                 Log.error(`Disposition ${dispositionString} was not found. Unable to disposition.`);
+//                 return;
+//             }
+
+//             dispositionComment = new comments.DevDispositionComment(disposition, comment);
+//             hasExistingDisposition = error.hasDeveloperDisposition;
+//         }
+//         else 
+//         {
+//             let disposition = comments.LeadDispositions[dispositionString as keyof typeof comments.LeadDispositions];
+//             if(disposition == undefined){
+//                 Log.error(`Disposition ${dispositionString} was not found. Unable to disposition.`);
+//                 return;
+//             }
+
+//             dispositionComment = new comments.LeadDispositionComment(disposition, comment);
+//             hasExistingDisposition = error.hasLeadDisposition;
+//         }
+
+//         // Does this error have an existing disposition?
+//         if(hasExistingDisposition && !overwriteExisting) {
+//             Log.message(`Skipping ${error.hash} which has an existing disposition.`);
+//             continue;
+//         }
         
-        // Add the Disposition
-        error.addComment(dispositionComment);
-        Log.message(`Dispositioned ${error.hash}`)
-    }
-}
+//         // Add the Disposition
+//         error.addComment(dispositionComment);
+//         Log.message(`Dispositioned ${error.hash}`)
+//     }
+// }
 
 export function printSummary()
 {
@@ -329,67 +344,59 @@ export function printSummary()
 }
 
 
-export function loadMetrics(currentDirectory : string)
+export function loadMetrics()
 {
+    // let metricsFileList = globSync(state.currentBrowserPath + '/**/*');
+    let metricsFileList = [];
+    let metricsText = "";
 
-    if (state.metricsList == null) {
+    if(state.metricsList == null || state.selectedBuild == null)
+    {
         return;
     }
 
-    let metricsData = state.metricsList;
+    // Filter Ignored Files
+    for(let filePath of globSync(state.currentBrowserPath + '/**/*'))
+    {
+        metricsFileList.push(path.relative(state.selectedBuild.codePath, filePath));
+    }
 
-    // Print a status message
-    Log.debug(`Attempting to load ${metricsData.length} metrics items...`);
+    for(let toolMetrics of state.metricsList)
+    {
+        let scopeFileMetrics = new Array;
+        let toolNumberofFiles = 0;
+        let toolLinesOfCode = 0.0;
+        let toolNumberOfFunctions = 0.0;
+        let toolPhysicalLines = 0.0;
+        let toolCyclomaticComplexity = 0.0;
 
-    // Add the header data
-    let headerData = '<tr><th>Metric</th>';
-    metricsData.forEach( (element) => {
-        headerData = headerData.concat(`<th>${element.tool}</th>`);
-    })
-    $("#metrics-list").append(headerData.concat('</tr>'));
-        
-    // Add the files data
-    let fileData = '<tr><td>Files</td>';
-    metricsData.forEach( (element) => {
-        fileData = fileData.concat(`<td>${element.numberOfFiles}</td>`);
-    })
-    $("#metrics-list").append(fileData.concat('</tr>'));
+        for(let relativePath of metricsFileList)
+        {
+            if(toolMetrics.fileMetrics.filter(x => x.file == relativePath).length)
+            {
+                let metricValue = toolMetrics.fileMetrics.find(x => x.file == relativePath);
+                scopeFileMetrics.push(metricValue);
 
-    // Add the functions data
-    let functionData = '<tr><td>Functions</td>';
-    metricsData.forEach( (element) => {
-        functionData = functionData.concat(`<td>${element.numberOfFunctions}</td>`);
-    })
-    $("#metrics-list").append(functionData.concat('</tr>'));
-    
-    // Add the physical lines data
-    let physicalLinesData = '<tr><td>Physical Lines</td>';
-    metricsData.forEach( (element) => {
-        physicalLinesData = physicalLinesData.concat(`<td>${element.physicalLines}</td>`);
-    })
-    $("#metrics-list").append(physicalLinesData.concat('</tr>'));
+                if(metricValue == null)
+                {
+                    break;
+                }
 
-    // Add the code lines data
-    let codeLinesData = '<tr><td>Code Lines</td>';
-    metricsData.forEach( (element) => {
-        codeLinesData = codeLinesData.concat(`<td>${element.linesOfCode}</td>`);
-    })
-    $("#metrics-list").append(codeLinesData.concat('</tr>'));
+                toolNumberofFiles = toolNumberofFiles + 1;
+                toolLinesOfCode = toolLinesOfCode + metricValue.linesOfCode;
+                toolNumberOfFunctions = toolNumberOfFunctions + metricValue.numberOfFunctions;
+                toolPhysicalLines = toolPhysicalLines + metricValue.physicalLines;
+                toolCyclomaticComplexity = toolCyclomaticComplexity + metricValue.cyclomaticComplexity;
+            }
+        }
 
-    // Add the comment lines data
-    let commentsData = '<tr><td>Comments</td>';
-    metricsData.forEach( (element) => {
-        commentsData = commentsData.concat(`<td>${element.linesOfCode}</td>`);
-    })
-    $("#metrics-list").append(commentsData.concat('</tr>'));
+        let toolTitle = toolMetrics.tool.charAt(0).toUpperCase() + toolMetrics.tool.slice(1);
+        let toolText = `${toolTitle} Metrics\nFiles: ${toolNumberofFiles}\nFunctions: ${toolNumberOfFunctions}\nPhysical Lines: ${toolPhysicalLines}\nCode Lines: ${toolLinesOfCode}\nCyclomatic Complexity: ${toolCyclomaticComplexity}\n\n`;
+        metricsText = metricsText + toolText;
+    }
 
-    // // Add the header data
-    // $("#metrics-list").append("<tr><th>Tool</th><th>Number of Files</th><th>Number of Functions</th><th>Physical Lines</th><th>Lines of Code</th></tr>")
-    
-    // // Add all of the metrics numbers
-    // metricsData.forEach( (element) => {
-    //     $("#metrics-list").append(`<tr><td>${element.tool}</td><td>${element.numberOfFiles}</td><td>${element.numberOfFunctions}</td><td>${element.physicalLines}</td><td>${element.linesOfCode}</td></tr>`)
-    // })
+    // Make the data available
+    ipcRenderer.send("metricsDataReady", metricsText);
 
 }
 

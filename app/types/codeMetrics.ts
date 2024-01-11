@@ -3,28 +3,30 @@
 export class CodeMetrics
 {
     protected _tool: string;
-    protected _numberOfFiles: string;
-    protected _numberOfFunctions: string;
-    protected _physicalLines: string;
-    protected _linesOfCode: string;
+    protected _numberOfFiles: number;
+    protected _numberOfFunctions: number;
+    protected _physicalLines: number;
+    protected _linesOfCode: number;
+    protected _cyclomaticComplexity: number;
+    protected _fileMetrics: Array<FileMetrics>;
     
     // Accessors   
     get tool() : string { return this._tool; }
-    get numberOfFiles() : string { return this._numberOfFiles; }
-    get numberOfFunctions() : string { return this._numberOfFunctions; }
-    get physicalLines() : string { return this._physicalLines; }
-    get linesOfCode() : string { return this._linesOfCode; }
+    get numberOfFiles() : number { return this._numberOfFiles; }
+    get numberOfFunctions() : number { return this._numberOfFunctions; }
+    get physicalLines() : number { return this._physicalLines; }
+    get linesOfCode() : number { return this._linesOfCode; }
+    get fileMetrics() : Array<FileMetrics> { return this._fileMetrics }
 
-    constructor(tool:string, numberOfFiles:string, numberOfFunctions:string, physicalLines:string, linesOfCode:string)
+    constructor(tool:string, numberOfFiles:number, numberOfFunctions:number, physicalLines:number, linesOfCode:number, cyclomaticComplexity:number, fileMetrics:Array<FileMetrics>)
     {
-        // super(id, fileLocation);
-        // super(state, "ErrorList", "error-list-children");
-
         this._tool = tool;
         this._numberOfFiles = numberOfFiles;
         this._numberOfFunctions = numberOfFunctions;
         this._physicalLines = physicalLines;
         this._linesOfCode = linesOfCode;
+        this._cyclomaticComplexity = cyclomaticComplexity;
+        this._fileMetrics = fileMetrics;
     }
 
 }
@@ -33,27 +35,27 @@ export class FileMetrics
 {
     protected _file: string;
     protected _parentDirectory: string;
-    protected _numberOfFunctions: string;
-    protected _physicalLines: string;
-    protected _linesOfCode: string;
+    protected _numberOfFunctions: number;
+    protected _physicalLines: number;
+    protected _linesOfCode: number;
+    protected _cyclomaticComplexity : number;
     
     // Accessors   
     get file() : string { return this._file; }
     get parentDirectory() : string { return this._parentDirectory; }
-    get numberOfFunctions() : string { return this._numberOfFunctions; }
-    get physicalLines() : string { return this._physicalLines; }
-    get linesOfCode() : string { return this._linesOfCode; }
+    get numberOfFunctions() : number { return this._numberOfFunctions; }
+    get physicalLines() : number { return this._physicalLines; }
+    get linesOfCode() : number { return this._linesOfCode; }
+    get cyclomaticComplexity() : number { return this._cyclomaticComplexity }
 
-    constructor(file:string, parentDirectory:string, numberOfFunctions:string, physicalLines:string, linesOfCode:string)
+    constructor(file:string, parentDirectory:string, numberOfFunctions:number, physicalLines:number, linesOfCode:number, cyclomaticComplexity:number)
     {
-        // super(id, fileLocation);
-        // super(state, "ErrorList", "error-list-children");
-
         this._file = file;
         this._parentDirectory = parentDirectory;
         this._numberOfFunctions = numberOfFunctions;
         this._physicalLines = physicalLines;
         this._linesOfCode = linesOfCode;
+        this._cyclomaticComplexity = cyclomaticComplexity;
     }
 
 }

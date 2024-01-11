@@ -2,14 +2,14 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FileMetrics = exports.CodeMetrics = void 0;
 class CodeMetrics {
-    constructor(tool, numberOfFiles, numberOfFunctions, physicalLines, linesOfCode) {
-        // super(id, fileLocation);
-        // super(state, "ErrorList", "error-list-children");
+    constructor(tool, numberOfFiles, numberOfFunctions, physicalLines, linesOfCode, cyclomaticComplexity, fileMetrics) {
         this._tool = tool;
         this._numberOfFiles = numberOfFiles;
         this._numberOfFunctions = numberOfFunctions;
         this._physicalLines = physicalLines;
         this._linesOfCode = linesOfCode;
+        this._cyclomaticComplexity = cyclomaticComplexity;
+        this._fileMetrics = fileMetrics;
     }
     // Accessors   
     get tool() { return this._tool; }
@@ -17,17 +17,17 @@ class CodeMetrics {
     get numberOfFunctions() { return this._numberOfFunctions; }
     get physicalLines() { return this._physicalLines; }
     get linesOfCode() { return this._linesOfCode; }
+    get fileMetrics() { return this._fileMetrics; }
 }
 exports.CodeMetrics = CodeMetrics;
 class FileMetrics {
-    constructor(file, parentDirectory, numberOfFunctions, physicalLines, linesOfCode) {
-        // super(id, fileLocation);
-        // super(state, "ErrorList", "error-list-children");
+    constructor(file, parentDirectory, numberOfFunctions, physicalLines, linesOfCode, cyclomaticComplexity) {
         this._file = file;
         this._parentDirectory = parentDirectory;
         this._numberOfFunctions = numberOfFunctions;
         this._physicalLines = physicalLines;
         this._linesOfCode = linesOfCode;
+        this._cyclomaticComplexity = cyclomaticComplexity;
     }
     // Accessors   
     get file() { return this._file; }
@@ -35,6 +35,7 @@ class FileMetrics {
     get numberOfFunctions() { return this._numberOfFunctions; }
     get physicalLines() { return this._physicalLines; }
     get linesOfCode() { return this._linesOfCode; }
+    get cyclomaticComplexity() { return this._cyclomaticComplexity; }
 }
 exports.FileMetrics = FileMetrics;
 //# sourceMappingURL=codeMetrics.js.map

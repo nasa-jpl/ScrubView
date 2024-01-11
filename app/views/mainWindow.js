@@ -326,6 +326,7 @@ function loadMetrics() {
         }
         let toolTitle = toolMetrics.tool.charAt(0).toUpperCase() + toolMetrics.tool.slice(1);
         let toolText = `${toolTitle} Metrics\nFiles: ${toolNumberofFiles}\nFunctions: ${toolNumberOfFunctions}\nPhysical Lines: ${toolPhysicalLines}\nCode Lines: ${toolLinesOfCode}\nCyclomatic Complexity: ${toolCyclomaticComplexity}\n\n`;
+        toolText = toolText.replace(/Nan/gi, 'N/A');
         metricsText = metricsText + toolText;
     }
     // Make the data available

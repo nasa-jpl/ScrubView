@@ -1,5 +1,4 @@
 import * as fs from 'fs';
-// import { Log } from "../utils/log"
 import { CodeMetrics, FileMetrics } from '../codeMetrics';
 
 export class MetricsParser
@@ -18,6 +17,33 @@ export class MetricsParser
         // Split the lines
         let lines = fileContents.split('\n');
         
+        // Get the metric indices
+        let numberOfFunctionsIndex = -1;
+        let physicalLinesIndex = -1;
+        let linesOfCodeIndex = -1;
+        let cyclomaticComplexityIndex = -1;
+        for(let i = 0; i < lines[0].split(',').length; i++)
+        {
+            let metricName = lines[0].split(',')[i];
+
+            if(metricName.toLowerCase() == 'number of functions')
+            {
+                numberOfFunctionsIndex = i;
+            }
+            else if(metricName.toLowerCase() == 'total lines')
+            {
+                physicalLinesIndex = i;
+            }
+            else if(metricName.toLowerCase() == 'lines of code')
+            {
+                linesOfCodeIndex = i;
+            }
+            else if(metricName.toLowerCase() == 'cyclomatic complexity')
+            {
+                cyclomaticComplexityIndex = i;
+            }
+        }
+
         // Parse the project metrics
         let pathSplit = filePath.split('/');
         let toolName = pathSplit[pathSplit.length - 1].replace('_metrics.csv', '');
@@ -33,10 +59,10 @@ export class MetricsParser
         for(let i = 2; i < lines.length; i++){
             let rawFileData = lines[i];
             let lineSplit = rawFileData.split(',');
-            let fileNumberOfFunctions = Number(lineSplit[3]);
-            let filePhyscialLines = Number(lineSplit[4]);
-            let fileLinesOfCode = Number(lineSplit[5]);
-            let fileCyclomaticComplexity = Number(lineSplit[7]);
+            let fileNumberOfFunctions = Number(lineSplit[numberOfFunctionsIndex]);
+            let filePhyscialLines = Number(lineSplit[physicalLinesIndex]);
+            let fileLinesOfCode = Number(lineSplit[linesOfCodeIndex]);
+            let fileCyclomaticComplexity = Number(lineSplit[cyclomaticComplexityIndex]);
 
             fileMetrics.push(new FileMetrics(lineSplit[0], lineSplit[1], fileNumberOfFunctions, filePhyscialLines, fileLinesOfCode, fileCyclomaticComplexity))
         }

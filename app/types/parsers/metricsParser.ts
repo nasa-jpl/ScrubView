@@ -21,6 +21,8 @@ export class MetricsParser
         let numberOfFunctionsIndex = -1;
         let physicalLinesIndex = -1;
         let linesOfCodeIndex = -1;
+        let numberOfCommentsIndex = -1;
+        let commentDensityIndex = -1;
         let cyclomaticComplexityIndex = -1;
         for(let i = 0; i < lines[0].split(',').length; i++)
         {
@@ -38,6 +40,14 @@ export class MetricsParser
             {
                 linesOfCodeIndex = i;
             }
+            else if(metricName.toLowerCase() == 'number of comments')
+            {
+                numberOfCommentsIndex = i;
+            }
+            else if(metricName.toLowerCase() == 'comment density')
+            {
+                commentDensityIndex = i;
+            }
             else if(metricName.toLowerCase() == 'cyclomatic complexity')
             {
                 cyclomaticComplexityIndex = i;
@@ -54,6 +64,8 @@ export class MetricsParser
         let projectNumberofFunctions = 0;
         let projectPhysicalLines = 0;
         let projectLinesOfCode = 0;
+        let projectNumberOfComments = 0;
+        let projectCommentDensity = 0;
         let projectCyclomaticComplexity = 0;
 
         for(let i = 2; i < lines.length; i++){
@@ -62,12 +74,14 @@ export class MetricsParser
             let fileNumberOfFunctions = Number(lineSplit[numberOfFunctionsIndex]);
             let filePhyscialLines = Number(lineSplit[physicalLinesIndex]);
             let fileLinesOfCode = Number(lineSplit[linesOfCodeIndex]);
+            let fileNumberOfComments = Number(lineSplit[numberOfCommentsIndex]);
+            let fileCommentDensity = Number(lineSplit[commentDensityIndex]);
             let fileCyclomaticComplexity = Number(lineSplit[cyclomaticComplexityIndex]);
 
-            fileMetrics.push(new FileMetrics(lineSplit[0], lineSplit[1], fileNumberOfFunctions, filePhyscialLines, fileLinesOfCode, fileCyclomaticComplexity))
+            fileMetrics.push(new FileMetrics(lineSplit[0], lineSplit[1], fileNumberOfFunctions, filePhyscialLines, fileLinesOfCode, fileNumberOfComments, fileCommentDensity, fileCyclomaticComplexity))
         }
 
-        return new CodeMetrics(toolName, projectNumberOfFiles, projectNumberofFunctions, projectPhysicalLines, projectLinesOfCode, projectCyclomaticComplexity, fileMetrics);
+        return new CodeMetrics(toolName, projectNumberOfFiles, projectNumberofFunctions, projectPhysicalLines, projectLinesOfCode, projectNumberOfComments, projectCommentDensity, projectCyclomaticComplexity, fileMetrics);
 
     }
 }

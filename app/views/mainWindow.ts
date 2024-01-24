@@ -348,7 +348,7 @@ export function loadMetrics()
 {
     // let metricsFileList = globSync(state.currentBrowserPath + '/**/*');
     let metricsFileList = [];
-    let metricsText = "";
+    let metricsText = "Metrics for current directory\n\n";
 
     if(state.metricsList == null || state.selectedBuild == null)
     {
@@ -368,6 +368,8 @@ export function loadMetrics()
         let toolLinesOfCode = 0.0;
         let toolNumberOfFunctions = 0.0;
         let toolPhysicalLines = 0.0;
+        let toolNumberOfComments = 0.0;
+        let toolCommentDensitySum = 0.0;
         let toolCyclomaticComplexity = 0.0;
 
         for(let relativePath of metricsFileList)
@@ -386,12 +388,16 @@ export function loadMetrics()
                 toolLinesOfCode = toolLinesOfCode + metricValue.linesOfCode;
                 toolNumberOfFunctions = toolNumberOfFunctions + metricValue.numberOfFunctions;
                 toolPhysicalLines = toolPhysicalLines + metricValue.physicalLines;
+                toolNumberOfComments = toolNumberOfComments + metricValue.numberOfComments;
+                toolCommentDensitySum = toolCommentDensitySum + metricValue.commentDensity;
                 toolCyclomaticComplexity = toolCyclomaticComplexity + metricValue.cyclomaticComplexity;
             }
         }
 
+        let toolCommentDensity = toolCommentDensitySum / toolNumberofFiles;
+
         let toolTitle = toolMetrics.tool.charAt(0).toUpperCase() + toolMetrics.tool.slice(1);
-        let toolText = `${toolTitle} Metrics\nFiles: ${toolNumberofFiles}\nFunctions: ${toolNumberOfFunctions}\nPhysical Lines: ${toolPhysicalLines}\nCode Lines: ${toolLinesOfCode}\nCyclomatic Complexity: ${toolCyclomaticComplexity}\n\n`;
+        let toolText = `${toolTitle} Metrics\n- Files: ${toolNumberofFiles}\n- Functions: ${toolNumberOfFunctions}\n- Physical Lines: ${toolPhysicalLines}\n- Code Lines: ${toolLinesOfCode}\n- Number of Comments: ${toolNumberOfComments}\n- Comment Density: ${toolCommentDensity.toFixed(2)}\n- Cyclomatic Complexity: ${toolCyclomaticComplexity}\n\n`;
         toolText = toolText.replace(/Nan/gi, 'N/A');
         metricsText = metricsText + toolText;
     }

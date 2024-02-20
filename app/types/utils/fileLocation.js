@@ -63,7 +63,7 @@ class FileLocation {
         // filePath = path.join(filePath, "src");
         // for(let pathComponent of rawPathComponents)
         //     filePath = path.join(filePath, pathComponent);
-        let filePath = path.join(buildPath, rawUri);
+        let filePath = rawUri;
         // Done, return the object
         return new FileLocation(filePath, lineNumber, buildPath);
     }
